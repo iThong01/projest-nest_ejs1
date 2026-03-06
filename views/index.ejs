@@ -1,0 +1,58 @@
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>
+        <%= myMessage%>
+    </title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <%- include('patials/navbar') %>
+
+    <header class="p-10">
+        <section id="content" class="grid grid-cols-2 gap-4">
+            <section id="contentText" class="content-center">
+                <h1>Find Your Herb!!!</h1>
+                <h1>For Life Longevity</h1>
+                <p>Use for your life better than now ,For enjoy with family.</p>
+                <div class="bg-black text-white max-w-24 h-8 text-center content-center mt-2 rounded-4xl">
+                    <a class="font-semibold" href="Pages/Shop/shopCard.jsp">Find now</a>
+                </div>
+            </section>
+            <section>
+                <img src="photos/Herbs.jpg" alt="Herbs" />
+            </section>
+        </section>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-green-800 mb-8 text-center">Our Featured Herbs</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+            <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
+                <figure class="px-4 pt-4">
+                    <img src="photos/Herbs.jpg" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
+                </figure>
+                <div class="card-body items-center text-center">
+                    <h2 class="card-title text-green-700">Ginseng Extract</h2>
+                    <p class="text-gray-500 text-sm">Boost your energy and immune system naturally.</p>
+                    <div class="text-xl font-bold text-black my-2">฿ 90</div>
+                    <div class="card-actions">
+                        <button class="btn btn-success text-white rounded-full px-8">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <%- include('patials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</body>
+
+</html>
