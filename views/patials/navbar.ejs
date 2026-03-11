@@ -1,94 +1,97 @@
 <nav
-        class="relative bg-green-500/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
-        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-            <div class="relative flex h-16 items-center justify-between">
-                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                    <button type="button" command="--toggle" commandfor="mobile-menu"
-                        class="relative inline-flex items-center justify-center rounded-md p-2 text-black-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
-                        <span class="absolute -inset-0.5"></span>
-                        <span class="sr-only">Open main menu</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
-                            aria-hidden="true" class="size-6 in-aria-expanded:hidden">
-                            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
+    class="relative bg-green-500/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <button type="button" command="--toggle" commandfor="mobile-menu"
+                    class="relative inline-flex items-center justify-center rounded-md p-2 text-black-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+                    <span class="absolute -inset-0.5"></span>
+                    <span class="sr-only">Open main menu</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
+                        aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                        <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
+                        aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                        <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-1 sm:flex-none items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex shrink-0 items-center text-2xl text-green-800 font-semibold">
+                    Green Market
+                </div>
+                <div class="hidden sm:ml-6 sm:block">
+                    <div class="flex space-x-4">
+                        <a href="/" aria-current="page"
+                            class="rounded-md <%= activeMenu === 'index' ? 'bg-gray-950/50' : 'hover:bg-white/5 hover:text-white' %>  px-3 py-2 text-sm font-medium text-green-750">
+                            Home</a>
+                        <a href="/shop"
+                            class="rounded-md <%= activeMenu === 'shop' ? 'bg-gray-950/50' : 'hover:bg-white/5 hover:text-white' %> px-3 py-2 text-sm font-medium text-green-750 ">
+                            Shop</a>
+                        <a href="/article"
+                            class="rounded-md <%= activeMenu === 'article' ? 'bg-gray-950/50' : 'hover:bg-white/5 hover:text-white' %> px-3 py-2 text-sm font-medium text-green-750">
+                            Article</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hidden sm:flex flex-1 items-center justify-center px-4 lg:px-8">
+                <div class="relative w-full max-w-lg">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
-                            aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
-                            <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="flex flex-1 sm:flex-none items-center justify-center sm:items-stretch sm:justify-start">
-                    <div class="flex shrink-0 items-center text-2xl text-green-800 font-semibold">
-                        Green Market
                     </div>
-                    <div class="hidden sm:ml-6 sm:block">
-                        <div class="flex space-x-4">
-                            <a href="index.html" aria-current="page"
-                                class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-green">Home</a>
-                            <a href="/shop"
-                                class="rounded-md px-3 py-2 text-sm font-medium text-green-750 hover:bg-white/5 hover:text-white">Shop</a>
-                            <a href="Pages/Article/Article.html"
-                                class="rounded-md px-3 py-2 text-sm font-medium text-green-750 hover:bg-white/5 hover:text-white">Article</a>
-                        </div>
-                    </div>
+                    <input type="text"
+                        class="block w-full py-1.5 pl-10 pr-4 text-sm text-gray-900 border border-white/30 rounded-full bg-white/70 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all"
+                        placeholder="Search...">
                 </div>
-                <div class="hidden sm:flex flex-1 items-center justify-center px-4 lg:px-8">
-                    <div class="relative w-full max-w-lg">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
-                        <input type="text"
-                            class="block w-full py-1.5 pl-10 pr-4 text-sm text-gray-900 border border-white/30 rounded-full bg-white/70 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all"
-                            placeholder="Search...">
-                    </div>
-                </div>
-                <div class="absolute inset-y-0 right-0 flex shrink-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0">
-                    <a type="button" href="Pages/Shop/Basket.jsp"
-                        class="size-9 relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
+            </div>
+            <div class="absolute inset-y-0 right-0 flex shrink-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0">
+                <a type="button" href="/shop/Your-Basket"
+                    class="size-9 relative rounded-full p-1 <%= activeMenu==='basket' ? 'bg-gray-950/50' : '' %> ">
+                    <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">View baskets</span>
+                    <img src="/icons/shopping-cart.png" alt="Basket" />
+                </a>
+                <div class="relative ml-3">
+                    <a href="/login"
+                        class="size-8 relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                         <span class="absolute -inset-1.5"></span>
-                        <span class="sr-only">View baskets</span>
-                        <img src="icons/shopping-cart.png" alt="Basket" />
+                        <span class="sr-only">Open user menu</span>
+                        <img src="/icons/user.png" alt="Login"
+                            class="size-8 rounded-full bg-white-800 outline -outline-offset-1 outline-white/10" />
                     </a>
-                    <div class="relative ml-3">
-                        <a href="Pages/Login/Login.jsp"
-                            class="size-8 relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                            <span class="absolute -inset-1.5"></span>
-                            <span class="sr-only">Open user menu</span>
-                            <img src="icons/user.png" alt="Login"
-                                class="size-8 rounded-full bg-white-800 outline -outline-offset-1 outline-white/10" />
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
-            <div class="space-y-1 px-2 pt-2 pb-3">
-                <div class="mb-4 mt-2 px-2">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
-                        <input type="text"
-                            class="block w-full p-2.5 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                            placeholder="Search...">
+    <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
+        <div class="space-y-1 px-2 pt-2 pb-3">
+            <div class="mb-4 mt-2 px-2">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
                     </div>
+                    <input type="text"
+                        class="block w-full p-2.5 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Search...">
                 </div>
-                <a href="index.html" aria-current="page"
-                    class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Home</a>
-                <a href="Pages/Shop/shopCard.jsp"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Shop</a>
-                <a href="Pages/Article/Article.html"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Articles</a>
             </div>
-        </el-disclosure>
-    </nav>
+            <a href="/" aria-current="page"
+                class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Home</a>
+            <a href="/shop"
+                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Shop</a>
+            <a href="/article"
+                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Articles</a>
+        </div>
+    </el-disclosure>
+</nav>

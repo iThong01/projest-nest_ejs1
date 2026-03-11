@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-green-800">Register</h2>
+                <p class="mt-2 text-sm text-gray-500">สร้างบัญชี Green Market</p>
+            </div>
+
+            <form action="/login/Register" method="post" class="space-y-6">
+                <!-- <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                </div>
+                <div> 
+                    <label for="lname" class="block text-sm font-medium text-gray-700 mb-1">Last name</label>
+                    <input type="text" id="Lname" name="Lname" placeholder="Last name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                </div>
+                <div> 
+                    <label for="gmail" class="block text-sm font-medium text-gray-700 mb-1">Gmail</label>
+                    <input type="email" id="Gmail" name="Gmail" placeholder="Gmail..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                </div> -->
+                <div>
+                    <label for="user" class="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                    <input type="text" id="user" name="user" placeholder="username..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" placeholder="password..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                </div>
+                <div class="flex gap-4 pt-2">
+                    <button type="reset" class="w-1/2 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                        Reset
+                    </button>
+                    <button type="submit" class="w-1/2 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                        Submit
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center border-t border-gray-100 pt-6">
+                <p class="text-sm text-gray-600">
+                    มีบัญชีอยู่แล้วป่าว? 
+                    <a href="/login" class="font-semibold text-green-600 hover:text-green-500 transition-colors">
+                        Login Here
+                    </a>
+                </p>
+            </div>
+
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </body>
+</html>

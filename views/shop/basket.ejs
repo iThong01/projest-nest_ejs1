@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Basket</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <%- include('../patials/navbar') %>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-8">My Basket</h1>
+            <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+                <div class="lg:col-span-8">
+                    <div class="flex py-6 border-b border-gray-200 bg-white p-4 rounded-lg shadow-sm mb-4">
+                        <div class="h-28 w-28 flex-shrink-0 overflow-hidden rounded-md border border-gray-100">
+                            <img src="#" alt="Herb"
+                                class="h-full w-full object-cover object-center">
+                        </div>
+
+                        <div class="ml-4 flex flex-1 flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between text-base font-semibold text-gray-900">
+                                    <h3>
+                                        <!-- name -->
+                                    </h3>
+                                    <p class="ml-4 text-green-600">฿ 500
+                                    </p>
+                                </div>
+                                <p class="mt-1 text-sm text-gray-500">Brand: brand
+                                </p>
+                            </div>
+
+                            <div class="flex flex-1 items-end justify-between text-sm">
+                                <p class="text-gray-500">ITEM #10
+                                </p>
+                                <div class="flex">
+                                    <button type="button"
+                                        class="font-medium text-red-500 hover:text-red-400">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 mt-8 lg:mt-0">
+                    <section
+                        class="check bg-white border border-gray-200 rounded-xl shadow-sm p-6 sm:p-8 sticky top-24">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Order Summary</h2>
+
+                        <div class="space-y-4 text-sm text-gray-600">
+                            <div class="flex justify-between">
+                                <span>จำนวนสินค้า (15 ชิ้น)</span>
+                                <span class="font-medium text-gray-900">฿ 99999</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>ค่าจัดส่ง (Shipping)</span>
+                                <span class="font-medium text-gray-900">฿50.00</span>
+                            </div>
+
+                            <div
+                                class="border-t border-gray-200 pt-4 flex justify-between text-lg font-bold text-gray-900">
+                                <span>ยอดรวมทั้งสิ้น (Total)</span>
+                                <span class="text-green-600">฿ 55555</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 space-y-3">
+                            <button
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md">
+                                ชำระเงิน (Checkout)
+                            </button>
+                            <a href="/shop"
+                                class="w-full flex justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors">
+                                เลือกสินค้าต่อ (Continue Shopping)
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        
+        <%- include('../patials/footer') %>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</body>
+
+</html>

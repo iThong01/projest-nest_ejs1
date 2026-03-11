@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Article Herb</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <%- include('../patials/navbar') %>
+    <section class="py-16 bg-gray-50 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <header class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-green-800 sm:text-4xl">Blog Herbal</h2>
+                <p class="mt-4 text-lg text-gray-600">เราจะเรียนรู้การใช้สมุนไพร ไปด้วยกัน.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <article
+                    class="card bg-base-100 shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col">
+                    <div class="card-body flex flex-col flex-grow p-6 md:p-8">
+
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-500">Mar 16, 2020</span>
+                            <span
+                                class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">ใบกะเพรา</span>
+                        </div>
+
+                        <h3 class="card-title text-xl font-bold text-gray-900 mb-2 leading-snug">
+                            อาหารที่มีส่วนผสมของใบกะเพรา หรือใช้เป็นส่วนผสม.</h3>
+                        <p class="text-gray-600 flex-grow text-sm leading-relaxed">
+                            อาหารเหล่านั้นก็มีหลากหลาย ส่วนมากเป็นอาหารคาวที่นิยมมากท่สุดคือ กะเพรา+เนื้อต่างๆ
+                            มีความหอมจากใบกะเพรา มีความร้อนจากใบกะเพรา.
+                        </p>
+
+                        <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold text-lg">
+                                T</div>
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900 m-0">Thanomrod Thong</p>
+                                <p class="text-xs text-gray-500 m-0">CEO / Founder</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <%- include('../patials/footer')%>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</body>
+
+</html>

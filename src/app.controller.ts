@@ -9,7 +9,8 @@ export class AppController {
   @Render('index')
   getHello(){
     return {
-      myMessage: this.appService.getHello()
+      myMessage: this.appService.getHello(),
+      activeMenu: 'index'
     };
   }
 }

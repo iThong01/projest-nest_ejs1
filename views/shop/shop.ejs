@@ -10,41 +10,89 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
-    <main class="mx-auto max-w-7xl px-4 py-10">
-        <h1 class="text-4xl font-bold text-green-800 mb-8 text-center">All Herbs & Products</h1>
-        <h2><a href="shop/Manage">Manage-Shop</a></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <%- include('../patials/navbar') %>
+        <main class="mx-auto max-w-7xl px-4 py-10">
+            <h1 class="text-4xl font-bold text-green-800 mb-8 text-center">All Herbs & Products</h1>
+            <h2><a href="shop/Manage">Manage-Shop</a></h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-            <% Item.forEach(function(product) { %>
+                <% Item.forEach(function(product) { %>
 
-                <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
-                    <figure class="px-4 pt-4">
-                        <img src="/photos/Herbs.jpg" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
-                    </figure>
-                    <div class="card-body items-center text-center">
+                    <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
+                        <figure class="px-4 pt-4">
+                            <img src="/photos/Herbs.jpg" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
+                        </figure>
+                        <div class="card-body items-center text-center">
 
-                        <h2 class="card-title text-green-700">
-                            <%= product.name %>
-                        </h2>
+                            <h2 class="card-title text-green-700">
+                                <%= product.name %>
+                            </h2>
 
-                        <p class="text-gray-500 text-sm">
-                            <%= product.des %>
-                        </p>
+                            <p class="text-gray-500 text-sm">
+                                <%= product.des %>
+                            </p>
 
-                        <div class="text-xl font-bold text-black my-2">฿ <%= product.price %>
-                        </div>
+                            <div class="text-xl font-bold text-black my-2">฿ <%= product.price %>
+                            </div>
 
-                        <div class="card-actions">
-                            <button class="btn btn-success text-white rounded-full px-8">Add to Cart</button>
+                            <div class="join">
+                                <button type="button" class="btn btn-sm join-item"
+                                    onclick="decreaseQty('<%= product.id %>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 12H4" />
+                                    </svg>
+                                </button>
+
+                                <input type="number" id="qty-<%= product.id %>"
+                                    class="input input-bordered input-sm join-item w-16 text-center focus:outline-none"
+                                    value="1" min="1" max="<%= product.count %>" readonly>
+
+                                <button type="button" class="btn btn-sm join-item"
+                                    onclick="increaseQty('<%= product.id %>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn btn-success text-white rounded-full px-8">Add to Cart</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <%      }); %>
-        </div>
-    </main>
+                    <% }); %>
+            </div>
+        </main>
+        <%- include('../patials/footer') %>
+            <script>
+                function incCount(itemId) {
+                    const inputF = $('#qty-' + itemId);
+                    const curVal = parseInt(inputF.val());
+                    const max = parseInt(inputF.attr('max'));
+
+                    if (curVal < max) {
+                        inputF.value = curVal + 1;
+                    } else {
+                        alert('ก็รอไปก่อน สินค่ามีแค่นี้ครับ');
+                    }
+                }
+                function decCount(itemId) {
+                    const inputF = $('#qty-' + itemId);
+                    const curVal = parseInt(inputF.val());
+
+                    if (curVal > 1) {
+                        inputF.val(curVal - 1);
+                    }
+                }
+            </script>
 </body>
 
 </html>
