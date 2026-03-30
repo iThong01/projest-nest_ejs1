@@ -1,14 +1,121 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Manage-Shop</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-<body>
-    <h1><%= word%></h1>
+
+<body class="bg-base-200 min-h-screen p-4">
+
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-primary mb-6">📦 จัดการคลังสินค้า</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <section class="lg:col-span-2">
+                <div class="bg-base-100 p-4 rounded-box shadow-sm">
+                    <h2 class="text-xl font-bold mb-4 border-b pb-2">🛒 รายการสินค้าในระบบ</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+                        <% Item.forEach(function(product) { %>
+                            <div
+                                class="card card-compact bg-base-100 shadow-sm hover:shadow-md transition-all border border-base-300">
+
+                                <figure class="px-4 pt-4">
+                                    <div class="flex items-center justify-center p-2 rounded-lg bg-base-200 max-h-full max-w-64 object-contain border border-base-200 overflow-hidden">
+                                        <img src="/images/products/<%= product.image %>" alt="<%= product.name %>"
+                                            class="max-h-full max-w-full object-contain" />
+                                    </div>
+                                </figure>
+
+                                <div class="card-body">
+
+                                    <h3 class="card-title text-sm font-bold m-0 line-clamp-1"
+                                        title="<%= product.name %>">
+                                        <%= product.name %>
+                                    </h3>
+
+                                    <p class="text-xs text-base-content/70 m-0 line-clamp-2">
+                                        <%= product.descript %>
+                                    </p>
+
+                                    <div class="flex justify-between items-center mt-2">
+                                        <span class="font-bold text-primary">
+                                            <%= product.price %> ฿
+                                        </span>
+                                        <span class="badge badge-outline badge-sm">สต๊อก: <%= product.count %></span>
+                                    </div>
+
+                                    <div class="card-actions justify-end mt-2 pt-3 border-t border-base-200 w-full">
+                                        <button class="btn btn-xs btn-warning">Edit</button>
+                                        <button class="btn btn-xs btn-error">Del</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lg:col-span-1">
+                <div class="card bg-base-100 shadow-md sticky top-4 border border-base-300">
+                    <div class="card-body p-5">
+                        <h2 class="card-title text-lg mb-2 border-b pb-2">✨ เพิ่มข้อมูลใหม่</h2>
+
+                        <form action="/shop/add-item" method="POST" enctype="multipart/form-data" class="space-y-3">
+
+                            <div class="form-control">
+                                <label class="label p-1"><span
+                                        class="label-text text-xs font-bold">ชื่อสินค้า</span></label>
+                                <input type="text" name="name" class="input input-bordered input-sm w-full" required>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="form-control">
+                                    <label class="label p-1"><span class="label-text text-xs font-bold">ราคา
+                                            (฿)</span></label>
+                                    <input type="number" name="price" class="input input-bordered input-sm w-full"
+                                        required>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label p-1"><span
+                                            class="label-text text-xs font-bold">จำนวนสต๊อก</span></label>
+                                    <input type="number" name="count" class="input input-bordered input-sm w-full"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label p-1"><span
+                                        class="label-text text-xs font-bold">รายละเอียด</span></label>
+                                <textarea name="descript"
+                                    class="textarea textarea-bordered textarea-sm w-full h-16"></textarea>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label p-1"><span
+                                        class="label-text text-xs font-bold">รูปภาพ</span></label>
+                                <input type="file" name="image" accept="image/*"
+                                    class="file-input file-input-bordered file-input-sm w-full" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-sm w-full mt-4">บันทึก</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </body>
+
 </html>

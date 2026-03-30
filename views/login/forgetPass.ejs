@@ -14,7 +14,7 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">🔍 Reset Account</h2>
                     <p class="text-sm text-gray-500 mb-6">กรุณากรอก Username ที่ต้องการแก้ไขข้อมูล</p>
 
-                    <form action="/" method="post" class="flex flex-col sm:flex-row gap-4 items-end">
+                    <form action="/login/search-user" method="post" class="flex flex-col sm:flex-row gap-4 items-end">
                         <input type="hidden" name="action" value="search">
 
                         <div class="form-control flex-1 w-full">
@@ -25,23 +25,22 @@
                     </form>
                 </div>
             </div>
-
+            <% if(locals.userAcc) {%>
             <div class="card bg-white shadow-xl border border-green-200 hover:-translate-y-1 transition-transform duration-300">
                 <div class="card-body p-6 md:p-8">
                     <h3 class="text-xl font-bold text-green-700 border-b border-gray-100 pb-4 mb-4">✏️ แก้ไขข้อมูลบัญชี</h3>
 
-                    <form action="/" method="post" class="space-y-4">
-                        <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="id" value="getid">
+                    <form action="/login/update-user" method="post" class="space-y-4">
+                        <input type="hidden" name="id" value="<%= userAcc.id %>">
 
                         <div class="form-control">
                             <label class="label py-1"><span class="label-text font-bold text-gray-600">Username (ไม่สามารถแก้ไขได้)</span></label>
-                            <input type="text" name="name" value="getuser" class="input input-bordered bg-gray-100 text-gray-500 cursor-not-allowed" readonly>
+                            <input type="text" name="user" value="<% userAcc.user %>" class="input input-bordered bg-gray-100 text-gray-500 cursor-not-allowed" readonly>
                         </div>
 
                         <div class="form-control">
                             <label class="label py-1"><span class="label-text font-bold text-gray-600">New Password</span></label>
-                            <input type="text" name="password" value="getPassword" class="input input-bordered focus:border-green-500 focus:ring-1 focus:ring-green-500" required>
+                            <input type="text" name="password" value="<% userAcc.password %>" class="input input-bordered focus:border-green-500 focus:ring-1 focus:ring-green-500" required>
                         </div>
 
                         <div class="card-actions flex gap-3 mt-6 pt-4 border-t border-gray-100">
@@ -51,10 +50,12 @@
                     </form>
                 </div>
             </div>
-
+            <% } %>
+            <% if(locals.errorMsg) { %>
             <div class="alert alert-error shadow-lg rounded-xl flex items-center bg-red-100 border border-red-200">
-                <span class="text-red-800 font-semibold">ไม่พบ Username นี้ ตรวจสอบใหม่อีกครั้ง</span>
+                <span class="text-red-800 font-semibold"><%= errorMsg %></span>
             </div>
+            <% } %>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     </body>

@@ -9,41 +9,51 @@
 </head>
 
 <body>
-    <%- include('../patials/navbar') %>
+    <%- include('../partials/navbar') %>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <h1 class="text-3xl font-extrabold text-gray-900 mb-8">My Basket</h1>
             <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
                 <div class="lg:col-span-8">
-                    <div class="flex py-6 border-b border-gray-200 bg-white p-4 rounded-lg shadow-sm mb-4">
-                        <div class="h-28 w-28 flex-shrink-0 overflow-hidden rounded-md border border-gray-100">
-                            <img src="#" alt="Herb"
-                                class="h-full w-full object-cover object-center">
-                        </div>
-
-                        <div class="ml-4 flex flex-1 flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between text-base font-semibold text-gray-900">
-                                    <h3>
-                                        <!-- name -->
-                                    </h3>
-                                    <p class="ml-4 text-green-600">฿ 500
-                                    </p>
+                    <% if (cart && cart.length > 0) { %>
+                        <% cart.forEach(cartItem => { %>
+                            <div class="flex py-6 border-b border-gray-200 bg-white p-4 rounded-lg shadow-sm mb-4">
+                                <div class="h-28 w-28 flex-shrink-0 overflow-hidden rounded-md border border-gray-100">
+                                    <img src="/images/products/<%= cartItem.item.image %>" alt="<%= cartItem.item.name %>"
+                                        class="h-full w-full object-cover object-center">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">Brand: brand
-                                </p>
-                            </div>
 
-                            <div class="flex flex-1 items-end justify-between text-sm">
-                                <p class="text-gray-500">ITEM #10
-                                </p>
-                                <div class="flex">
-                                    <button type="button"
-                                        class="font-medium text-red-500 hover:text-red-400">Remove</button>
+                                <div class="ml-4 flex flex-1 flex-col justify-between">
+                                    <div>
+                                        <div class="flex justify-between text-base font-semibold text-gray-900">
+                                            <h3>
+                                                <%= cartItem.item.name %>
+                                            </h3>
+                                            <p class="ml-4 text-green-600">฿ <%= cartItem.item.price %>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-1 items-end justify-between text-sm">
+                                        <p class="text-gray-500">จำนวน: <%= cartItem.quantity %> ชิ้น
+                                        </p>
+                                        <div class="flex">
+                                            <form action="/shop/remove-from-cart" method="POST">
+                                                <input type="hidden" name="itemId" value="<%= cartItem.item.id %>">
+                                                <button type="submit"
+                                                    class="font-medium text-red-500 hover:text-red-400">Remove</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="text-center py-10 bg-white rounded-lg shadow-sm">
+                            <p class="text-gray-500 text-lg">ตะกร้าสินค้าว่างเปล่า</p>
+                            <a href="/shop" class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ไปช้อปปิ้งกันเลย!</a>
                         </div>
-                    </div>
+                    <% } %>
                 </div>
                 <div class="lg:col-span-4 mt-8 lg:mt-0">
                     <section
@@ -52,23 +62,23 @@
 
                         <div class="space-y-4 text-sm text-gray-600">
                             <div class="flex justify-between">
-                                <span>จำนวนสินค้า (15 ชิ้น)</span>
-                                <span class="font-medium text-gray-900">฿ 99999</span>
+                                <span>จำนวนสินค้า (<%= totalItem %> ชิ้น)</span>
+                                <span class="font-medium text-gray-900">฿ <%= totalPrice %></span>
                             </div>
                             <div class="flex justify-between">
                                 <span>ค่าจัดส่ง (Shipping)</span>
-                                <span class="font-medium text-gray-900">฿50.00</span>
+                                <span class="font-medium text-gray-900">฿ 50.00</span>
                             </div>
 
                             <div
                                 class="border-t border-gray-200 pt-4 flex justify-between text-lg font-bold text-gray-900">
                                 <span>ยอดรวมทั้งสิ้น (Total)</span>
-                                <span class="text-green-600">฿ 55555</span>
+                                <span class="text-green-600">฿ <%= totalPrice + 50 %></span>
                             </div>
                         </div>
 
                         <div class="mt-8 space-y-3">
-                            <button
+                            <button onclick="checkout()"
                                 class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md">
                                 ชำระเงิน (Checkout)
                             </button>
@@ -83,8 +93,83 @@
         </div>
 
         
-        <%- include('../patials/footer') %>
+        <%- include('../partials/footer') %>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script>
+            async function checkout() {
+                if (!confirm('ยืนยันการชำระเงินมั้ย')) return;
+
+                try {
+                    const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
+                    const originalText = checkoutBtn.innerText;
+                    checkoutBtn.innerText = 'กำลังประมวลผล...';
+                    checkoutBtn.disabled = true;
+
+                    const response = await fetch('/shop/checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert(data.message);
+                        
+                        const cartContainer = document.querySelector('.lg\\:col-span-8');
+                        cartContainer.innerHTML = `
+                            <div class="text-center py-10 bg-white rounded-lg shadow-sm">
+                                <p class="text-gray-500 text-lg">ตะกร้าสินค้าของคุณยังว่างเปล่า</p>
+                                <a href="/shop" class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ไปช้อปปิ้งกันเลย!</a>
+                            </div>
+                        `;
+
+                        const summaryContainer = document.querySelector('.check.bg-white');
+                        if (summaryContainer) {
+                            summaryContainer.innerHTML = `
+                                <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Order Summary</h2>
+                                <div class="space-y-4 text-sm text-gray-600">
+                                    <div class="flex justify-between">
+                                        <span>จำนวนสินค้า (0 ชิ้น)</span>
+                                        <span class="font-medium text-gray-900">฿ 0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>ค่าจัดส่ง (Shipping)</span>
+                                        <span class="font-medium text-gray-900">฿ 0.00</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 pt-4 flex justify-between text-lg font-bold text-gray-900">
+                                        <span>ยอดรวมทั้งสิ้น (Total)</span>
+                                        <span class="text-green-600">฿ 0</span>
+                                    </div>
+                                </div>
+                                <div class="mt-8 space-y-3">
+                                    <a href="/shop" class="w-full flex justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors">
+                                        ไปเลือกสินค้าเร็ว
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        alert(data.message || 'เกิดข้อผิดพลาดในการสั่งซื้อ');
+                        const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
+                        if (checkoutBtn) {
+                            checkoutBtn.innerText = 'ชำระเงิน (Checkout)';
+                            checkoutBtn.disabled = false;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error during checkout:', error);
+                    alert('ไม่สามารถดำเนินการได้ในขณะนี้');
+                    
+                    const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
+                    if (checkoutBtn) {
+                        checkoutBtn.innerText = 'ชำระเงิน (Checkout)';
+                        checkoutBtn.disabled = false;
+                    }
+                }
+            }
+        </script>
 </body>
 
 </html>

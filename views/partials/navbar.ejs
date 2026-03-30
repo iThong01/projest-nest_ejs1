@@ -59,11 +59,20 @@
                 </a>
                 <div class="relative ml-3">
                     <a href="/login"
-                        class="size-8 relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        class="flex items-center gap-2 relative rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                         <span class="absolute -inset-1.5"></span>
                         <span class="sr-only">Open user menu</span>
-                        <img src="/icons/user.png" alt="Login"
-                            class="size-8 rounded-full bg-white-800 outline -outline-offset-1 outline-white/10" />
+                        <% if (typeof session !== 'undefined' && session.username) { %>
+                            <div class="avatar online placeholder">
+                                <div class="bg-green-700 text-white w-8 rounded-full flex items-center justify-center font-bold">
+                                    <span><%= session.username.charAt(0).toUpperCase() %></span>
+                                </div>
+                            </div>
+                            <span class="hidden sm:block text-sm font-medium text-green-800"><%= session.username %></span>
+                        <% } else { %>
+                            <img src="/icons/user.png" alt="Login"
+                                class="size-8 rounded-full bg-white-800 outline -outline-offset-1 outline-white/10" />
+                        <% } %>
                     </a>
                 </div>
             </div>

@@ -2,15 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  //ตั้งค่าโฟลเดอร์ เก็บไฟล์รูปภาพหรือ CSS 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setBaseViewsDir(join(process.cwd(), 'views'));
 
   app.setViewEngine('ejs');
+
+  app.use(
+    session({
+      secret: 'my-secret-key-shop',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use((req, res, next)=>{
+    res.locals.session = req.session;
+    next();
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 

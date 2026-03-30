@@ -14,17 +14,30 @@
 </head>
 
 <body>
-    <%- include('../patials/navbar') %>
+    <%- include('../partials/navbar') %>
         <main class="mx-auto max-w-7xl px-4 py-10">
-            <h1 class="text-4xl font-bold text-green-800 mb-8 text-center">All Herbs & Products</h1>
-            <h2><a href="shop/Manage">Manage-Shop</a></h2>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-4xl font-bold text-green-800 flex-1 text-center">All Herbs & Products</h1>
+                <% if (typeof session !== 'undefined' && session.role === 'admin') { %>
+                <div class="flex-none">
+                    <a href="shop/Manage" class="btn bg-green-600 hover:bg-green-700 text-white border-none shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Manage Shop
+                    </a>
+                </div>
+                <% } %>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
                 <% Item.forEach(function(product) { %>
 
                     <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
                         <figure class="px-4 pt-4">
-                            <img src="/photos/Herbs.jpg" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
+                            <!-- ยังไม่เปลี่ยนรูป -->
+                            <img src="/images/products/<%= product.image %>" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
                         </figure>
                         <div class="card-body items-center text-center">
 
@@ -33,7 +46,7 @@
                             </h2>
 
                             <p class="text-gray-500 text-sm">
-                                <%= product.des %>
+                                <%= product.description %>
                             </p>
 
                             <div class="text-xl font-bold text-black my-2">฿ <%= product.price %>
@@ -41,7 +54,7 @@
 
                             <div class="join">
                                 <button type="button" class="btn btn-sm join-item"
-                                    onclick="decreaseQty('<%= product.id %>')">
+                                    onclick="decCount('<%= product.id %>')">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -54,7 +67,7 @@
                                     value="1" min="1" max="<%= product.count %>" readonly>
 
                                 <button type="button" class="btn btn-sm join-item"
-                                    onclick="increaseQty('<%= product.id %>')">
+                                    onclick="incCount('<%= product.id %>')">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -64,14 +77,17 @@
                             </div>
 
                             <div class="card-actions">
-                                <button class="btn btn-success text-white rounded-full px-8">Add to Cart</button>
+                                <button class="btn btn-success text-white rounded-full px-8"
+                                    onclick="addToCart('<%= product.id %>')">
+                                    Add to Cart
+                                </button>
                             </div>
                         </div>
                     </div>
                     <% }); %>
             </div>
         </main>
-        <%- include('../patials/footer') %>
+        <%- include('../partials/footer') %>
             <script>
                 function incCount(itemId) {
                     const inputF = $('#qty-' + itemId);
@@ -79,7 +95,7 @@
                     const max = parseInt(inputF.attr('max'));
 
                     if (curVal < max) {
-                        inputF.value = curVal + 1;
+                        inputF.val(curVal+1);
                     } else {
                         alert('ก็รอไปก่อน สินค่ามีแค่นี้ครับ');
                     }
@@ -91,6 +107,42 @@
                     if (curVal > 1) {
                         inputF.val(curVal - 1);
                     }
+                }
+                
+                async function addToCart(itemId) {
+                    const qtyInput = $('#qty-' + itemId);
+                    const quantity = parseInt(qtyInput.val());
+
+                    if (!quantity || quantity < 1) {
+                        alert('กรุณาเลือกจำนวนสินค้าอย่างน้อย 1 ชิ้นครับ');
+                        return;
+                    }
+                    try{
+                        const response = await fetch('/shop/add-to-cart',{
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body:JSON.stringify({
+                                itemId: itemId,
+                                quantity: quantity
+                            })
+                        });
+                        const data = await response.json();
+                        if(data.success){
+                            alert(data.message + '\nตอนนี้มีสินค้า '+ data.cartCount + 'รายการ');
+                        }else{
+                            alert('เกิดข้อผิดพลาด :'+ data.message);
+                        }
+                    }catch(error){
+                        console.error('Error : ', error);
+                    }
+                    //console.log('📦 เตรียมส่งข้อมูลไปหลังบ้าน:');
+                    //console.log('- สินค้ารหัส (ID):', itemId);
+                    //console.log('- จำนวน (Qty):', quantity, 'ชิ้น');
+
+                    //alert('รหัส ' + itemId + ' จำนวน ' + quantity + ' ชิ้น เข้าตะกร้า');
+                    
                 }
             </script>
 </body>

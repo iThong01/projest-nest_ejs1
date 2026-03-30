@@ -6,8 +6,10 @@ export class ArticleController {
     constructor(private readonly articleService: ArticleService ){}
     @Get()
     @Render('article/article')
-    getArticle(){
+    async getArticle(){
+        const items = await this.articleService.findAll();
         return{
+            Item : items,
             word:'Article',
             activeMenu: 'article'
         };
