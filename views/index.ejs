@@ -8,51 +8,198 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
-<body>
+<body class="bg-base-100 flex flex-col min-h-screen">
     <%- include('partials/navbar') %>
 
-    <header class="p-10">
-        <section id="content" class="grid grid-cols-2 gap-4">
-            <section id="contentText" class="content-center">
-                <h1>Find Your Herb!!!</h1>
-                <h1>For Life Longevity</h1>
-                <p>Use for your life better than now ,For enjoy with family.</p>
-                <div class="bg-black text-white max-w-24 h-8 text-center content-center mt-2 rounded-4xl">
-                    <a class="font-semibold" href="/shop">Find now</a>
-                </div>
+    <header id="hero-header" class="min-h-[calc(100vh-64px)] flex items-center justify-center p-10 bg-green-50">
+        <section id="content" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto items-center">
+            <section id="contentText" class="flex flex-col justify-center space-y-6">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-green-900 leading-tight">
+                    Find Your Herb!!!<br>
+                    <span class="text-green-600">For Life Longevity</span>
+                </h1>
+                <p class="text-lg text-gray-700 max-w-md">
+                    Use for your life better than now, for enjoy with family. Discover nature's best remedies.
+                </p>
+                <a href="/shop" class="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-full transition-colors w-fit text-lg shadow-lg">
+                    Find now
+                </a>
             </section>
-            <section>
-                <img src="photos/Herbs.jpg" alt="Herbs" />
+            <section class="flex justify-center md:justify-end">
+                <img src="photos/Herbs.jpg" alt="Herbs" class="rounded-2xl shadow-2xl max-h-[60vh] object-cover w-full max-w-md" />
             </section>
         </section>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <main id="main-content" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 flex-grow w-full">
         <h2 class="text-2xl font-bold text-green-800 mb-8 text-center">Our Featured Herbs</h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-
+            <% Item.forEach(function(product) { %>
             <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
                 <figure class="px-4 pt-4">
-                    <img src="photos/Herbs.jpg" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
+                    <img src="/images/products/<%= product.image %>" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
                 </figure>
                 <div class="card-body items-center text-center">
-                    <h2 class="card-title text-green-700">Ginseng Extract</h2>
-                    <p class="text-gray-500 text-sm">Boost your energy and immune system naturally.</p>
-                    <div class="text-xl font-bold text-black my-2">฿ 90</div>
-                    <div class="card-actions">
-                        <button class="btn btn-success text-white rounded-full px-8">Add to Cart</button>
+                    <h2 class="card-title text-green-700"><%= product.name %></h2>
+                    <p class="text-gray-500 text-sm"><%= product.description %></p>
+                    <div class="text-xl font-bold text-black my-2">฿ <%= product.price %></div>
+                    
+                    <div class="join">
+                        <button type="button" class="btn btn-sm join-item" onclick="decCount('<%= product.id %>')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                            </svg>
+                        </button>
+                        <input type="number" id="qty-<%= product.id %>" class="input input-bordered input-sm join-item w-16 text-center focus:outline-none" value="1" min="1" max="<%= product.count %>" readonly>
+                        <button type="button" class="btn btn-sm join-item" onclick="incCount('<%= product.id %>')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="card-actions mt-3">
+                        <button class="btn btn-success text-white rounded-full px-8" onclick="addToCart('<%= product.id %>')">Add to Cart</button>
                     </div>
                 </div>
             </div>
-
+            <% }); %>
         </div>
     </main>
 
     <%- include('partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        function incCount(itemId) {
+            const inputF = $('#qty-' + itemId);
+            const curVal = parseInt(inputF.val());
+            const max = parseInt(inputF.attr('max'));
+
+            if (curVal < max) {
+                inputF.val(curVal+1);
+            } else {
+                alert('ก็รอไปก่อน สินค่ามีแค่นี้ครับ');
+            }
+        }
+        function decCount(itemId) {
+            const inputF = $('#qty-' + itemId);
+            const curVal = parseInt(inputF.val());
+
+            if (curVal > 1) {
+                inputF.val(curVal - 1);
+            }
+        }
+        
+        async function addToCart(itemId) {
+            const qtyInput = $('#qty-' + itemId);
+            const quantity = parseInt(qtyInput.val());
+
+            if (!quantity || quantity < 1) {
+                alert('กรุณาเลือกจำนวนสินค้าอย่างน้อย 1 ชิ้นครับ');
+                return;
+            }
+            try {
+                const response = await fetch('/shop/add-to-cart',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        itemId: itemId,
+                        quantity: quantity
+                    })
+                });
+                const data = await response.json();
+                if(data.success){
+                    alert(data.message + '\nตอนนี้มีสินค้า '+ data.cartCount + 'รายการ');
+                } else {
+                    alert('เกิดข้อผิดพลาด :'+ data.message);
+                }
+            } catch (error) {
+                console.error('Error : ', error);
+            }
+        }
+
+        $(document).ready(function() {
+            $('form[action="/shop/search"]').on('submit', async function(e) {
+                e.preventDefault();
+                const q = $(this).find('input[name="q"]').val();
+                
+                try {
+                    const response = await fetch(`/shop/api/search?q=${encodeURIComponent(q)}`);
+                    const result = await response.json();
+                    
+                    if(result.success) {
+                        $('#hero-header').slideUp();
+                        
+                        let html = `
+                            <div class="mb-8 text-center">
+                                <h1 class="text-3xl font-bold text-green-800">Search Results</h1>
+                                <p class="text-gray-600 mt-2">Showing results for: <span class="font-semibold text-green-700">"${result.query}"</span></p>
+                            </div>
+                        `; 
+                        
+                        if (result.data && result.data.length > 0) {
+                            html += '<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">';
+                            result.data.forEach(product => {
+                                html += `
+                                <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
+                                    <figure class="px-4 pt-4">
+                                        <img src="/images/products/${product.image}" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
+                                    </figure>
+                                    <div class="card-body items-center text-center">
+                                        <h2 class="card-title text-green-700">${product.name}</h2>
+                                        <p class="text-gray-500 text-sm">${product.description}</p>
+                                        <div class="text-xl font-bold text-black my-2">฿ ${product.price}</div>
+
+                                        <div class="join">
+                                            <button type="button" class="btn btn-sm join-item" onclick="decCount('${product.id}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                                </svg>
+                                            </button>
+                                            <input type="number" id="qty-${product.id}" class="input input-bordered input-sm join-item w-16 text-center focus:outline-none" value="1" min="1" max="${product.count}" readonly>
+                                            <button type="button" class="btn btn-sm join-item" onclick="incCount('${product.id}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div class="card-actions mt-3">
+                                            <button class="btn btn-success text-white rounded-full px-8" onclick="addToCart('${product.id}')">
+                                                Add to Cart
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            });
+                            html += '</div>';
+                        } else {
+                            html += `
+                            <div class="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <h3 class="text-xl font-bold text-gray-700">No products found</h3>
+                                <p class="text-gray-500 mt-2">Try adjusting your search query.</p>
+                                <a href="/shop" class="btn btn-outline btn-success mt-6">Back to Shop</a>
+                            </div>`;
+                        }
+                        
+                        $('#main-content').html(html);
+                        window.history.pushState({}, '', `/?q=${encodeURIComponent(q)}`);
+                    }
+                } catch(error) {
+                    console.error('Search error:', error);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

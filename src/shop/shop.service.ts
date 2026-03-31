@@ -68,4 +68,11 @@ export class ShopService {
 
         return true;
     }
+
+    async searchItems(query: string): Promise<Item[]> {
+        if (!query) return [];
+        return await this.itemRepo.createQueryBuilder('item')
+            .where('item.name LIKE :query', { query: `%${query}%` })
+            .getMany();
+    }
 }

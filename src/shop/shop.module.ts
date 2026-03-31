@@ -10,6 +10,7 @@ import { OrderItem } from './entities/order-item.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Item, Transaction, OrderItem])],
   providers: [ShopService],
-  controllers: [ShopController]
+  controllers: [ShopController],
+  exports: [ShopService]
 })
 export class ShopModule {}

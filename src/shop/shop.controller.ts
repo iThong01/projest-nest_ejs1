@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Post, Res, UseInterceptors, UploadedFile, Body, Session } from '@nestjs/common';
+import { Controller, Get, Render, Post, Res, UseInterceptors, UploadedFile, Body, Session, Query } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { callbackify } from 'util';
@@ -32,6 +32,24 @@ export class ShopController {
             activeMenu: 'manage'
         };
     }
+    @Get('search')
+    @Render('shop/search')
+    async searchPage(@Query('q') q: string) {
+        const items = await this.shopService.searchItems(q);
+        return {
+            Item: items,
+            query: q,
+            title: `Search Results for "${q}"`,
+            activeMenu: 'shop'
+        };
+    }
+
+    @Get('api/search')
+    async searchApi(@Query('q') q: string) {
+        const items = await this.shopService.searchItems(q);
+        return { success: true, data: items, query: q };
+    }
+
     @Get('Your-Basket')
     @Render('shop/basket')
     getBasketPage(@Session() session: MySessionData) {
@@ -79,6 +97,15 @@ export class ShopController {
         console.log('เซฟรูปสำเร็จ คือ:', finalNameImage);
         return res.redirect('/shop/Manage');
     }
+
+    @Post('edit')
+    async editItem(
+        @Body() body: any,
+        @Res() res: Response
+    ){
+         
+    }
+
     @Post('add-to-cart')
     async addToCart(
         @Body() body: { itemId: string, quantity: string},
