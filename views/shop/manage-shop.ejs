@@ -4,110 +4,134 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Manage-Shop</title>
+    <title>Manage Herb Shop</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
-<body class="bg-base-200 min-h-screen p-4">
+<body class="bg-green-50 min-h-screen p-4 font-sans text-green-900">
 
     <div class="max-w-7xl mx-auto">
-        <h1 class="text-3xl font-bold text-primary mb-6">📦 จัดการคลังสินค้า</h1>
+        <h1 class="text-3xl font-bold text-green-800 mb-6 drop-shadow-sm">จัดการคลังสินค้าสมุนไพร</h1>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <section class="lg:col-span-2">
-                <div class="bg-base-100 p-4 rounded-box shadow-sm">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2">🛒 รายการสินค้าในระบบ</h2>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-green-100">
+                    <h2 class="text-xl font-bold mb-4 border-b border-green-200 pb-2 text-green-700">รายการสมุนไพรในระบบ
+                    </h2>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
                         <% Item.forEach(function(product) { %>
                             <div
-                                class="card card-compact bg-base-100 shadow-sm hover:shadow-md transition-all border border-base-300">
+                                class="card card-compact bg-white shadow-sm hover:shadow-md transition-all border border-green-100 overflow-hidden group">
 
-                                <figure class="px-4 pt-4">
-                                    <div class="flex items-center justify-center p-2 rounded-lg bg-base-200 max-h-full max-w-64 object-contain border border-base-200 overflow-hidden">
-                                        <img src="/images/products/<%= product.image %>" alt="<%= product.name %>"
-                                            class="max-h-full max-w-full object-contain" />
+                                <figure class="px-4 pt-4 relative">
+                                    <div
+                                        class="flex items-center justify-center p-2 rounded-xl bg-green-50 h-48 w-full border border-green-100 group-hover:border-green-300 transition-colors">
+                                        <img src="data:image/jpeg;base64,<%= product.image %>" alt="<%= product.name %>"
+                                            class="max-h-full max-w-full object-contain drop-shadow-sm" />
+                                    </div>
+                                    <div
+                                        class="absolute top-6 right-6 bg-white/80 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-bold text-green-700 shadow-sm border border-green-100">
+                                        สต๊อก: <%= product.count %>
                                     </div>
                                 </figure>
 
                                 <div class="card-body">
-
-                                    <h3 class="card-title text-sm font-bold m-0 line-clamp-1"
+                                    <h3 class="card-title text-base font-bold text-green-800 m-0 line-clamp-1"
                                         title="<%= product.name %>">
                                         <%= product.name %>
                                     </h3>
 
-                                    <p class="text-xs text-base-content/70 m-0 line-clamp-2">
+                                    <p class="text-xs text-green-600/80 m-0 line-clamp-2 min-h-[2rem]">
                                         <%= product.descript %>
                                     </p>
 
-                                    <div class="flex justify-between items-center mt-2">
-                                        <span class="font-bold text-primary">
+                                    <div class="flex justify-between items-center mt-3">
+                                        <span class="font-bold text-green-600 text-lg">
                                             <%= product.price %> ฿
                                         </span>
-                                        <span class="badge badge-outline badge-sm">สต๊อก: <%= product.count %></span>
                                     </div>
 
-                                    <div class="card-actions justify-end mt-2 pt-3 border-t border-base-200 w-full">
-                                        <button href="#" class="btn btn-xs btn-warning">Edit</button>
-                                        <button href="#" class="btn btn-xs btn-error">Del</button>
+                                    <div
+                                        class="card-actions justify-end mt-2 pt-3 border-t border-green-50 w-full gap-2">
+                                        <a href="/shop/edit/<%= product.id %>"
+                                            class="btn btn-xs bg-amber-100 hover:bg-amber-200 text-amber-700 border-none shadow-sm">แก้ไข</a>
+                                        <!-- <a href="/shop/delete/<%= product.id %>" class="btn btn-xs bg-red-100 hover:bg-red-200 text-red-700 border-none shadow-sm" onclick="return confirm('ยืนยันการลบสมุนไพรนี้ออกจากระบบ?');">ลบ</a> -->
+                                        <form action="/shop/delete/<%= product.id %>" method="post" class="inline"
+                                            onsubmit="return confirm('ยืนยันการลบสมุนไพรนี้?');">
+                                            <button type="submit"class="btn btn-xs bg-red-100 hover:bg-red-200 text-red-700 border-none shadow-sm">
+                                                ลบ
+                                            </button>
+                                        </form>
                                     </div>
 
                                 </div>
                             </div>
-                        <% }); %>
+                            <% }); %>
                     </div>
                 </div>
             </section>
 
             <section class="lg:col-span-1">
-                <div class="card bg-base-100 shadow-md sticky top-4 border border-base-300">
-                    <div class="card-body p-5">
-                        <h2 class="card-title text-lg mb-2 border-b pb-2">✨ เพิ่มข้อมูลใหม่</h2>
+                <div class="card bg-white shadow-sm sticky top-4 border border-green-200 rounded-2xl">
+                    <div class="card-body p-6">
+                        <h2
+                            class="card-title text-lg mb-3 border-b border-green-200 pb-2 text-green-700 flex items-center gap-2">
+                            <span></span> เพิ่มข้อมูลใหม่
+                        </h2>
 
-                        <form action="/shop/add-item" method="POST" enctype="multipart/form-data" class="space-y-3">
+                        <form action="/shop/add-item" method="POST" enctype="multipart/form-data" class="space-y-4">
 
                             <div class="form-control">
                                 <label class="label p-1"><span
-                                        class="label-text text-xs font-bold">ชื่อสินค้า</span></label>
-                                <input type="text" name="name" class="input input-bordered input-sm w-full" required>
+                                        class="label-text text-sm font-bold text-green-700">ชื่อสมุนไพร</span></label>
+                                <input type="text" name="name"
+                                    class="input input-bordered input-sm w-full border-green-200 focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-green-50/30"
+                                    required>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-2 gap-3">
                                 <div class="form-control">
-                                    <label class="label p-1"><span class="label-text text-xs font-bold">ราคา
-                                            (฿)</span></label>
-                                    <input type="number" name="price" class="input input-bordered input-sm w-full"
+                                    <label class="label p-1"><span
+                                            class="label-text text-sm font-bold text-green-700">ราคา (฿)</span></label>
+                                    <input type="number" step="0.01" name="price"
+                                        class="input input-bordered input-sm w-full border-green-200 focus:border-green-500 bg-green-50/30"
                                         required>
                                 </div>
                                 <div class="form-control">
                                     <label class="label p-1"><span
-                                            class="label-text text-xs font-bold">จำนวนสต๊อก</span></label>
-                                    <input type="number" name="count" class="input input-bordered input-sm w-full"
+                                            class="label-text text-sm font-bold text-green-700">จำนวนสต๊อก</span></label>
+                                    <input type="number" name="count"
+                                        class="input input-bordered input-sm w-full border-green-200 focus:border-green-500 bg-green-50/30"
                                         required>
                                 </div>
                             </div>
 
                             <div class="form-control">
                                 <label class="label p-1"><span
-                                        class="label-text text-xs font-bold">รายละเอียด</span></label>
+                                        class="label-text text-sm font-bold text-green-700">สรรพคุณ /
+                                        รายละเอียด</span></label>
                                 <textarea name="descript"
-                                    class="textarea textarea-bordered textarea-sm w-full h-16"></textarea>
+                                    class="textarea textarea-bordered textarea-sm w-full h-20 border-green-200 focus:border-green-500 bg-green-50/30"></textarea>
                             </div>
 
                             <div class="form-control">
                                 <label class="label p-1"><span
-                                        class="label-text text-xs font-bold">รูปภาพ</span></label>
+                                        class="label-text text-sm font-bold text-green-700">รูปภาพสมุนไพร</span></label>
                                 <input type="file" name="image" accept="image/*"
-                                    class="file-input file-input-bordered file-input-sm w-full" required>
+                                    class="file-input file-input-bordered file-input-sm w-full border-green-200 text-green-700 bg-green-50/30 file:bg-green-100 file:text-green-800 file:border-none hover:file:bg-green-200"
+                                    required>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-sm w-full mt-4">บันทึก</button>
+                            <button type="submit"
+                                class="btn btn-sm w-full mt-5 bg-green-600 hover:bg-green-700 text-white border-none shadow-md shadow-green-200">
+                                บันทึกข้อมูล
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -115,7 +139,25 @@
 
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0fdf4;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bbf7d0;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #86efac;
+        }
+    </style>
 </body>
 
 </html>

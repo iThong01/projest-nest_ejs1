@@ -1,9 +1,6 @@
-import { Controller, Get, Render, Post, Res, UseInterceptors, UploadedFile, Body, Session, Query } from '@nestjs/common';
+import { Controller, Get, Param, Render, Post, Res, UseInterceptors, UploadedFile, Body, Session, Query } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { callbackify } from 'util';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { PlainObjectToDatabaseEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToDatabaseEntityTransformer.js';
 import type { MySessionData } from './interfaces/cart.interface';
 import type { Response } from 'express';
@@ -68,42 +65,58 @@ export class ShopController {
             activeMenu: 'basket'
         };
     }
+
+    @Get('edit/:id')
+    async getEdit(@Param('id')id: string,@Res() res:Response){
+        const items = await this.shopService.findOne(Number(id));
+        if(!items){
+            return res.redirect('/shop/Manage');
+        }
+        return res.render('shop/edit' ,{item:items});
+    }
+
+    @Post('edit/:id')
+    @UseInterceptors(FileInterceptor('image',{})) //up image binary
+    async editItem(@Param('id')id:string, @UploadedFile() file:Express.Multer.File, @Body() body: any,@Res() res: Response){
+         const itemUpdate = await this.shopService.findOne(Number(id));
+         if(!itemUpdate){
+            return res.redirect('/shop/Manage');
+         }
+         itemUpdate.name = body.name;
+         itemUpdate.price = Number(body.price);
+         itemUpdate.description = body.description;
+         itemUpdate.count = Number(body.count);
+         if(file){
+            itemUpdate.image = file.buffer;
+         }
+         await this.shopService.updateItem(itemUpdate);
+         return res.redirect('/shop/Manage');
+    }
+
     @Post('add-item')
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './public/images/products',
-            filename: (req, file, callback) => {
-                const uniqueNum = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const ext = extname(file.originalname);
-                const filename = `${uniqueNum}${ext}`;
-                callback(null, filename);
-            }
-        })
-    }))
+    @UseInterceptors(FileInterceptor('image'))
     async createNewItem(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: any,
         @Res() res: Response
     ){
-        const finalNameImage = file.filename;
+        const finalImageBuffer = file ? file.buffer : null;
         const { name, price, count, descript } = body;
         await this.shopService.createItem({
             name: name,
             price: price,
             count: count,
             description: descript,
-            image: finalNameImage
+            image: finalImageBuffer
         });
-        console.log('เซฟรูปสำเร็จ คือ:', finalNameImage);
+        console.log('เซฟรูปลง Database สำเร็จ');
         return res.redirect('/shop/Manage');
     }
 
-    @Post('edit')
-    async editItem(
-        @Body() body: any,
-        @Res() res: Response
-    ){
-         
+    @Post('delete/:id')
+    async deleteItem(@Param('id') id: string, @Res() res: Response) {
+        await this.shopService.deleteItem(Number(id));
+        return res.redirect('/shop/Manage');
     }
 
     @Post('add-to-cart')

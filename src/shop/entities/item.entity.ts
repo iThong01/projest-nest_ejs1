@@ -17,6 +17,21 @@ export class Item{
     @Column({type: 'text', nullable: true})
     description: string;
     
-    @Column({type: 'varchar', length: 255, nullable: true})
-    image: string;
+    @Column({
+        type: 'longblob', 
+        nullable: true,
+        transformer: {
+            to(value: string | Buffer): Buffer | null {
+                if (!value) return null;
+                if (typeof value === 'string') return Buffer.from(value, 'base64');
+                return value;
+            },
+            from(value: Buffer | string): string | null {
+                if (!value) return null;
+                if (typeof value === 'string') return value;
+                return value.toString('base64');
+            }
+        }
+    })
+    image: string | Buffer | null;
 }
