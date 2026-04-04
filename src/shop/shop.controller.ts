@@ -11,33 +11,39 @@ export class ShopController {
 
     @Get()
     @Render('shop/shop')
-    async getShopPage() {
+    async getShopPage(@Session() session: MySessionData) {
         const items = await this.shopService.findAll();
+        const cartCount = session.cart ? session.cart.length : 0;
         return {
             Item: items,
             title: 'Shop Herb',
-            activeMenu: 'shop'
+            activeMenu: 'shop',
+            ItemCartCount: cartCount
         };
     }
     @Get('Manage')
     @Render('shop/manage-shop')
-    async getManageShop() {
+    async getManageShop(@Session() session: MySessionData) {
         const items = await this.shopService.findAll();
+        const cartCount = session.cart ? session.cart.length : 0;
         return {
             Item: items,
             word: 'Manage-shop',
-            activeMenu: 'manage'
+            activeMenu: 'manage',
+            ItemCartCount: cartCount
         };
     }
     @Get('search')
     @Render('shop/search')
-    async searchPage(@Query('q') q: string) {
+    async searchPage(@Query('q') q: string,@Session() session: MySessionData) {
         const items = await this.shopService.searchItems(q);
+        const cartCount = session.cart ? session.cart.length : 0;
         return {
             Item: items,
             query: q,
             title: `Search Results for "${q}"`,
-            activeMenu: 'shop'
+            activeMenu: 'shop',
+            ItemCartCount: cartCount
         };
     }
 
@@ -51,6 +57,7 @@ export class ShopController {
     @Render('shop/basket')
     getBasketPage(@Session() session: MySessionData) {
         const cart = session.cart || [];
+        const cartCount = session.cart ? session.cart.length :0;
         let totalPrice = 0;
         let totalItem = 0;
         for(const cartItem of cart){
@@ -62,8 +69,34 @@ export class ShopController {
             totalPrice: totalPrice,
             totalItem: totalItem,
             word: 'Basket kub',
-            activeMenu: 'basket'
+            activeMenu: 'basket',
+            ItemCartCount: cartCount
         };
+    }
+    @Get('orders')
+    @Render('shop/orders')
+    async getHistory(@Session() session: MySessionData, @Res() res: Response){
+        const cartCount = session.cart ? session.cart.length : 0;
+        if(!session.userId){
+            return res.redirect('/login');
+        }
+        try{
+            const orders = await this.shopService.getUserOrders(session.userId.toString());
+            return {
+                orders: orders,
+                word: 'My History',
+                activeMenu: 'shop',
+                ItemCartCount: cartCount
+            };
+        }catch(error){
+            console.error('Error fetching orders: ',error);
+            return {
+                orders:[],
+                word: 'wrong get Data',
+                activeMenu:'shop',
+                ItemCartCount: cartCount
+            };
+        }
     }
 
     @Get('edit/:id')

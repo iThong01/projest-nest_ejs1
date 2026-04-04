@@ -97,5 +97,11 @@ export class ShopService {
             .where('item.name LIKE :query', { query: `%${query}%` })
             .getMany();
     }
-
+    
+    async getUserOrders(userId: string): Promise<Transaction[]>{
+        return await this.transactionRepo.find({
+            where: {userId},
+            order: {id: 'DESC'},
+        });
+    }
 }

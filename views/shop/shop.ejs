@@ -36,7 +36,6 @@
 
                     <div class="card bg-base-100 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
                         <figure class="px-4 pt-4">
-                            <!-- ยังไม่เปลี่ยนรูป -->
                             <img src="data:image/jpeg;base64,<%= product.image %>" alt="Herb" class="rounded-xl h-48 w-full object-cover" />
                         </figure>
                         <div class="card-body items-center text-center">
@@ -130,6 +129,14 @@
                         });
                         const data = await response.json();
                         if(data.success){
+                            const cartBadge = $('#cart-badge');
+                            cartBadge.text(data.cartCount);
+                            cartBadge.show();
+                            $('#basket-button').addClass('scale-125 bg-yellow-400');
+                            setTimeout(()=>{
+                                $('#basket-button').removeClass('scale-125 bg-yellow-400');
+                            },300);
+                            
                             alert(data.message + '\nตอนนี้มีสินค้า '+ data.cartCount + 'รายการ');
                         }else{
                             alert('เกิดข้อผิดพลาด :'+ data.message);

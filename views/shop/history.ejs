@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" , initial-scale="1.0">
+    <title>
+        <%= word || 'History' %>
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+    <%- include('../partials/navbar') %>
+        <div class="container mx-auto px-4 py-10 max-w-4xl">
+            <h1 class="text-3xl font-bold text-green-800 mb-8 border-b-4 border-green-500 pb-2 inline-block">
+                <%= word || 'My history' %>
+            </h1>
+            <% if(orders && orders.length>0) { %>
+                <div class="space-y-6">
+                    <% orders.forEach(function(order){ %>
+                        <div
+                            class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-green-500 overflow-hidden">
+                            <div class="p-6">
+                                <div
+                                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-4 border-b border-gray-100">
+                                    <div>
+                                        <h3 class="text-lg font-bold text-gray-800">
+                                            หมายเลขคำสั่งซื้อ: <span class="text-green-600">#<%= order.id %></span>
+                                        </h3>
+                                        <span
+                                            class="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full border border-green-200">
+                                            <%= order.status %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div
+                                        class="bg-gray-50 p-4 rounded-lg flex flex-col justify-center items-center sm:items-start">
+                                        <p class="text-xs text-gray-500 font-semibold mb-1">จำนวนสินค้าทั้งหมด</p>
+                                        <p class="text-2xl font-black text-gray-800">
+                                            <%= order.totalItem %> <span
+                                                    class="text-sm font-normal text-gray-600">ชิ้น</span>
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="bg-gray-50 p-4 rounded-lg flex flex-col justify-center items-center sm:items-end">
+                                        <p class="text-xs text-gray-500 font-semibold mb-1">ยอดรวมทั้งสิ้น</p>
+                                        <p class="text-2xl font-black text-green-600">
+                                            ฿<%= order.totalPrice.toLocaleString() %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+                <% } else { %>
+                    <div class="bg-white rounded-2xl shadow-sm p-12 text-center border border-gray-200 mt-10">
+
+                        <div class="text-6xl mb-4">📦</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">ยังไม่มีประวัติการสั่งซื้อ</h3>
+                        <p class="text-gray-500 mb-8">ยังไม่เคยทำการสั่งซื้อสินค้าใดๆ กับเราเลย ไปเลือกชมสินค้าในร้านกันก่อน</p>
+
+                        <a href="/shop" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 shadow-md">
+                            ไปช้อปปิ้งกันเลย
+                        </a>
+                    </div>
+                    <% } %>
+        </div>
+
+        <%- include('../partials/footer') %>
+</body>
+
+</html>
