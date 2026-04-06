@@ -19,7 +19,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: false,
       charset: 'utf8mb4',
     }),
-    ShopModule, LoginModule, ArticleModule],
+    ShopModule,
+    LoginModule,
+    ArticleModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,22 +1,23 @@
-import { Controller, Get, Render, Session } from '@nestjs/common';
+import { Controller, Get, Render, Req } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import type { MySessionData } from '../shop/interfaces/cart.interface';
+import type { Request } from 'express';
 
 @Controller('article')
 export class ArticleController {
-    constructor(private readonly articleService: ArticleService ){}
-    
-    @Get()
-    @Render('article/article')
-    async getArticle(@Session() session: MySessionData){
-        const items = await this.articleService.findAll();
-        const cartCount = session?.cart ? session.cart.length : 0;
-        
-        return{
-            Item : items,
-            word:'Article',
-            activeMenu: 'article',
-            ItemCartCount: cartCount
-        };
-    }
+  constructor(private readonly articleService: ArticleService) {}
+
+  @Get()
+  @Render('article/article')
+  async getArticle(@Req() req: Request) {
+    const items = await this.articleService.findAll();
+    let cart = req.cookies?.cart || [];
+    const cartCount = cart.length;
+
+    return {
+      Item: items,
+      word: 'Article',
+      activeMenu: 'article',
+      ItemCartCount: cartCount,
+    };
+  }
 }
