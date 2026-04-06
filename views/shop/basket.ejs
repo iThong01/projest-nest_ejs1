@@ -6,6 +6,7 @@
     <title>Your Basket</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
@@ -15,11 +16,12 @@
             <h1 class="text-3xl font-extrabold text-gray-900 mb-8">My Basket</h1>
             <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
                 <div class="lg:col-span-8">
-                    <% if (cart && cart.length > 0) { %>
-                        <% cart.forEach(cartItem => { %>
+                    <% if (cart && cart.length> 0) { %>
+                        <% cart.forEach(cartItem=> { %>
                             <div class="flex py-6 border-b border-gray-200 bg-white p-4 rounded-lg shadow-sm mb-4">
                                 <div class="h-28 w-28 flex-shrink-0 overflow-hidden rounded-md border border-gray-100">
-                                    <img src="data:image/jpeg;base64,<%= cartItem.item.image %>" alt="<%= cartItem.item.name %>"
+                                    <img src="data:image/jpeg;base64,<%= cartItem.item.image %>"
+                                        alt="<%= cartItem.item.name %>"
                                         class="h-full w-full object-cover object-center">
                                 </div>
 
@@ -47,13 +49,14 @@
                                     </div>
                                 </div>
                             </div>
-                        <% }) %>
-                    <% } else { %>
-                        <div class="text-center py-10 bg-white rounded-lg shadow-sm">
-                            <p class="text-gray-500 text-lg">ตะกร้าสินค้าว่างเปล่า</p>
-                            <a href="/shop" class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ไปช้อปปิ้งกันเลย!</a>
-                        </div>
-                    <% } %>
+                            <% }) %>
+                                <% } else { %>
+                                    <div class="text-center py-10 bg-white rounded-lg shadow-sm">
+                                        <p class="text-gray-500 text-lg">ตะกร้าสินค้าว่างเปล่า</p>
+                                        <a href="/shop"
+                                            class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ไปช้อปปิ้งกันเลย!</a>
+                                    </div>
+                                    <% } %>
                 </div>
                 <div class="lg:col-span-4 mt-8 lg:mt-0">
                     <section
@@ -92,84 +95,35 @@
             </div>
         </div>
 
-        
+
         <%- include('../partials/footer') %>
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <script>
-            async function checkout() {
-                if (!confirm('ยืนยันการชำระเงินมั้ย')) return;
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            <script>
+                async function checkout() {
+                    if (!confirm('ยืนยันการชำระเงินมั้ย')) return;
 
-                try {
-                    const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
-                    const originalText = checkoutBtn.innerText;
-                    checkoutBtn.innerText = 'กำลังประมวลผล...';
-                    checkoutBtn.disabled = true;
-
-                    const response = await fetch('/shop/checkout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
+                    const $checkoutBtn = $('button[onclick="checkot()"]');
+                    $.ajax({
+                        url: '/shop/checkout',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.href = data.paymentUrl;
+                            } else {
+                                alert(data.message || 'เกิดข้อผิดพลาดในการซื้อ');
+                                $('button[onclick="checkout()"]').text('ชำระเงิน').prop('disable', false);
+                            }
+                        },
+                        error: function(xhr, status, error){
+                            console.error('Error during checkout:' ,error);
+                            alert('ไม่สามารถดำเนิินการได้');
+                            $('button[onclick="checkout()"]').text('ชำระเงิน').prop('disable', false);
                         }
                     });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        alert(data.message);
-                        
-                        const cartContainer = document.querySelector('.lg\\:col-span-8');
-                        cartContainer.innerHTML = `
-                            <div class="text-center py-10 bg-white rounded-lg shadow-sm">
-                                <p class="text-gray-500 text-lg">ตะกร้าสินค้าของคุณยังว่างเปล่า</p>
-                                <a href="/shop" class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ไปช้อปปิ้งกันเลย!</a>
-                            </div>
-                        `;
-
-                        const summaryContainer = document.querySelector('.check.bg-white');
-                        if (summaryContainer) {
-                            summaryContainer.innerHTML = `
-                                <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Order Summary</h2>
-                                <div class="space-y-4 text-sm text-gray-600">
-                                    <div class="flex justify-between">
-                                        <span>จำนวนสินค้า (0 ชิ้น)</span>
-                                        <span class="font-medium text-gray-900">฿ 0</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>ค่าจัดส่ง (Shipping)</span>
-                                        <span class="font-medium text-gray-900">฿ 0.00</span>
-                                    </div>
-                                    <div class="border-t border-gray-200 pt-4 flex justify-between text-lg font-bold text-gray-900">
-                                        <span>ยอดรวมทั้งสิ้น (Total)</span>
-                                        <span class="text-green-600">฿ 0</span>
-                                    </div>
-                                </div>
-                                <div class="mt-8 space-y-3">
-                                    <a href="/shop" class="w-full flex justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors">
-                                        ไปเลือกสินค้าเร็ว
-                                    </a>
-                                </div>
-                            `;
-                        }
-                    } else {
-                        alert(data.message || 'เกิดข้อผิดพลาดในการสั่งซื้อ');
-                        const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
-                        if (checkoutBtn) {
-                            checkoutBtn.innerText = 'ชำระเงิน (Checkout)';
-                            checkoutBtn.disabled = false;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error during checkout:', error);
-                    alert('ไม่สามารถดำเนินการได้ในขณะนี้');
-                    
-                    const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
-                    if (checkoutBtn) {
-                        checkoutBtn.innerText = 'ชำระเงิน (Checkout)';
-                        checkoutBtn.disabled = false;
-                    }
                 }
-            }
-        </script>
+            </script>
 </body>
 
 </html>

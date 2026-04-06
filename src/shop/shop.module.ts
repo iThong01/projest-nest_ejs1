@@ -6,11 +6,10 @@ import { Item } from './entities/item.entity';
 import { Transaction } from './entities/transection.entity';
 import { OrderItem } from './entities/order-item.entity';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Item, Transaction, OrderItem])],
   providers: [ShopService],
   controllers: [ShopController],
-  exports: [ShopService]
+  exports: [ShopService],
 })
 export class ShopModule {}
