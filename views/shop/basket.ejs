@@ -110,36 +110,7 @@
                         success: function (data) {
                             if (data.success) {
                                 alert(data.message);
-
-                                $('.lg\\:col-span-8').html(`
-                            <div class="text-center py-10 bg-white rounded-lg shadow-sm">
-                                <p class="text-gray-500 text-lg">ตะกร้าสินค้าของคุณยังว่างเปล่า</p>
-                                <a href="/shop" class="mt-4 inline-block text-green-600 hover:text-green-500 font-medium">ช้อปปิ้งกัน</a>
-                            </div>
-                        `);
-
-                                $('.check.bg-white').html(`
-                            <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Order Summary</h2>
-                                <div class="space-y-4 text-sm text-gray-600">
-                                    <div class="flex justify-between">
-                                        <span>จำนวนสินค้า (0 ชิ้น)</span>
-                                        <span class="font-medium text-gray-900">฿ 0</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>ค่าจัดส่ง (Shipping)</span>
-                                        <span class="font-medium text-gray-900">฿ 0.00</span>
-                                    </div>
-                                    <div class="border-t border-gray-200 pt-4 flex justify-between text-lg font-bold text-gray-900">
-                                        <span>ยอดรวมทั้งสิ้น (Total)</span>
-                                        <span class="text-green-600">฿ 0</span>
-                                    </div>
-                                </div>
-                                <div class="mt-8 space-y-3">
-                                    <a href="/shop" class="w-full flex justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors">
-                                        ไปเลือกสินค้าเร็ว
-                                    </a>
-                                </div>
-                        `);
+                                window.location.href = data.paymentUrl;
                             } else {
                                 alert(data.message || 'เกิดข้อผิดพลาดในการซื้อ');
                                 $('button[onclick="checkout()"]').text('ชำระเงิน').prop('disable', false);

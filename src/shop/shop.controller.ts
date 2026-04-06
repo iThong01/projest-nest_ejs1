@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Render, Post, Res, Req, UseInterceptors, UploadedFile, Body, Session,Query,} from '@nestjs/common';
+import { Controller, Get, Param, Render, Post, Res, Req, UseInterceptors, UploadedFile, Body, Session,Query, Redirect,} from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlainObjectToDatabaseEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToDatabaseEntityTransformer.js';
@@ -7,6 +7,7 @@ import type { Request, Response } from 'express';
 import 'multer';
 import { REDIRECT_METADATA } from '@nestjs/common/constants';
 import { PassThrough } from 'stream';
+import { title } from 'process';
 
 @Controller('shop')
 export class ShopController {
@@ -88,8 +89,8 @@ export class ShopController {
       ItemCartCount: cartCount,
     };
   }
-  @Get('orders')
-  @Render('shop/orders')
+  @Get('history')
+  @Render('shop/history')
   async getHistory(
     @Session() session: MySessionData, 
     @Req() req: Request,
@@ -248,15 +249,17 @@ export class ShopController {
     try {
       const userId = session.userId ? session.userId.toString() : 'guest';
 
-      const isSuccess = await this.shopService.checkout(cart, userId);
-      if (isSuccess) {
+      const orderId = await this.shopService.checkout(cart, userId);
+      if (orderId) {
         res.cookie('cart', [], {
           httpOnly:true,
           maxAge: 30 * 24 * 60 * 60 *1000
         });
         return res.json({
           success: true,
-          message: 'สั่งซื้อสำเร็จ! บันทึกข้อมูลลงฐานข้อมูลแล้ว',
+          message: 'กำลังไปหน้าชำระเงิน',
+          orderId: orderId,
+          paymentUrl:`/shop/payment/${orderId}`
         });
       } else {
         return res
@@ -268,6 +271,44 @@ export class ShopController {
       return res
         .status(500)
         .json({ success: false, message: 'เกิดข้อผิดพลาดในการประมวลผล' });
+    }
+  }
+
+  @Get('payment/:orderId')
+  @Render('shop/payment')
+  async getPaymentPage(
+    @Param('orderId') orderId: string,
+    @Req() req: Request
+  ){
+    const order = await this.shopService.getOrderById(Number(orderId));
+    if(!order){
+      return { redirect: '/shop'};
+    }
+    const cart = req.cookies?.cart || [];
+    return{
+      order: order,
+      title: 'Payment Sim',
+      activeMenu: 'shop',
+      ItemCartCount: cart.length
+    };
+  }
+  @Post('confirm-payment')
+  async confirmPayment(
+    @Body() body: {orderId: string},
+    @Res() res: Response
+  ){
+    const orderId = Number(body.orderId);
+    const isUpdated = await this.shopService.updateOrderStatus(orderId, 'Complete');
+    if(isUpdated){
+      return res.json({
+        success: true,
+        message: 'ชำระเงินสำเร็จ ขอบคุณทที่ใช้บริการจาก Green Market'
+      });
+    }else{
+      return res.status(400).json({
+        success: false,
+        message: 'ชำระเงินไม่สำเร็จ'
+      });
     }
   }
 }

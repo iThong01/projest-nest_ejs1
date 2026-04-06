@@ -40,8 +40,8 @@ export class ShopService {
   async checkout(
     cart: {itemId:number; quantity: number}[] | undefined,
     userId: string | null = null,
-  ): Promise<boolean> {
-    if (!cart || cart.length === 0) return false;
+  ): Promise<number | null> {
+    if (!cart || cart.length === 0) return null;
 
     let totalPrice = 0;
     let totalItem = 0;
@@ -61,7 +61,7 @@ export class ShopService {
         userId: userId,
         totalPrice: totalPrice,
         totalItem: totalItem,
-        status: 'Complete',
+        status: 'Pending',
       });
 
       const savedTransaction = await queryRunner.manager.save(newTransaction);
@@ -87,11 +87,11 @@ export class ShopService {
         await queryRunner.manager.save(item);
       }
       await queryRunner.commitTransaction();
-      return true;
+      return savedTransaction.id;
     } catch (error) {
       console.error(`Transaction Fail Rollingback : ${( error as Error).message} `);
       await queryRunner.rollbackTransaction();
-      return false;
+      return null;
     } finally {
       await queryRunner.release();
     }
@@ -110,5 +110,17 @@ export class ShopService {
       where: { userId },
       order: { id: 'DESC' },
     });
+  }
+  async getOrderById(id:number): Promise<Transaction|null>{
+    return await this.transactionRepo.findOne({ where: {id}});
+  }
+  async updateOrderStatus(id:number, status: string): Promise<boolean> {
+    const order = await this.transactionRepo.findOne({where: {id}});
+    if(order){
+      order.status = status;
+      await this.transactionRepo.save(order);
+      return true;
+    }
+    return false;
   }
 }

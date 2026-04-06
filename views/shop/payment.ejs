@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body class="bg-gray-50">
+    <%- include('../partials/navbar') %>
+        <div class="max-w-3xl mx-auto px-4 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-green-600 p-8 text-white text-center">
+                    <h1 class="text-3xl font-bold">Payment Simulator</h1>
+                    <p class="mt-2 text-green-100">จำลองการชำระเงินผ่านระบบ Green Market</p>
+                </div>
+
+                <div class="p-8">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <span class="text-gray-600">Order ID:</span>
+                            <span class="text-xl font-bold text-gray-900">#<%= order.id %></span>
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <span class="text-gray-600">สถานะปัจจุบัน:</span>
+                            <span class="badge badge-warning font-semibold">
+                                <%= order.status %>
+                            </span>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-xl text-center">
+                            <p class="text-gray-500 uppercase tracking-wider text-sm">ยอดรวมที่ต้องชำระ (Total Amount)
+                            </p>
+                            <p class="text-5xl font-extrabold text-green-600 mt-2">฿ <%= order.totalPrice %>
+                            </p>
+                        </div>
+
+                        <button id="pay-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg
+      transition-all active:scale-95">
+                            Confirm Payment (ชำระเงิน)
+                        </button>
+
+                        <p class="text-center text-xs text-gray-400 mt-4 italic">
+                            นี่เป็นระบบจำลอง ไม่มีการหักเงินจริง
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include('../partials/footer') %>
+            <script>
+                $(document).ready(function () {
+                    $('#pay-button').on('click', function () {
+                        const $btn = $(this);
+
+                        if (!confirm('ยืนยันการชำระเงินยอด ฿ <%= order.totalPrice %> ใช่หรือไม่?')) return;
+
+                        $btn.text('กำลังประมวลผล...').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+                        $.ajax({
+                            url: '/shop/confirm-payment',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                orderId: '<%= order.id %>' 
+                            }),
+                            success: function (data) {
+                                if (data.success) {
+                                    alert(data.message);
+                                    window.location.href = '/shop/history';
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert('เกิดข้อผิดพลาด: ' + (xhr.responseJSON?.message || 'ไม่สามารถชำระเงินได้'));
+                                $btn.text('Confirm Payment (ชำระเงิน)').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                            }
+                        });
+                    });
+                });
+            </script>
+</body>
+
+</html>
