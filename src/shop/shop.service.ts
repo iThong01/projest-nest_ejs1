@@ -83,7 +83,7 @@ export class ShopService {
             return true;
 
         }catch(error){
-            console.error('Transaction Fail Rollingback : ',error.message);
+            console.error('Transaction Fail Rollingback : ',( error as Error).message);
             await queryRunner.rollbackTransaction();
             return false;
         }finally{
@@ -94,7 +94,7 @@ export class ShopService {
     async searchItems(query: string): Promise<Item[]> {
         if (!query) return [];
         return await this.itemRepo.createQueryBuilder('item')
-            .where('item.name LIKE :query', { query: `%${query}%` })
+            .where('LOWER(item.name) LIKE LOWER(:query)', { query: `%${query}%` })
             .getMany();
     }
     

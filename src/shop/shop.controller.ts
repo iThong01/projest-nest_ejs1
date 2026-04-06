@@ -4,6 +4,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { PlainObjectToDatabaseEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToDatabaseEntityTransformer.js';
 import type { MySessionData } from './interfaces/cart.interface';
 import type { Response } from 'express';
+import 'multer';
 
 @Controller('shop') 
 export class ShopController {

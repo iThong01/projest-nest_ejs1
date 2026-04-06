@@ -16,11 +16,11 @@
             <form action="/login/Register" method="post" class="space-y-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                    <input type="text" id="name" name="name" pattern="^[ก-๙a-zA-Z\s]+$" placeholder="Name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
                 </div>
                 <div> 
                     <label for="lname" class="block text-sm font-medium text-gray-700 mb-1">Last name</label>
-                    <input type="text" id="lname" name="lname" placeholder="Last name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
+                    <input type="text" id="lname" name="lname" pattern="^[ก-๙a-zA-Z\s]+$" placeholder="Last name..." required class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors sm:text-sm">
                 </div>
                 <div> 
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>

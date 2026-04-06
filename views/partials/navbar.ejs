@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="hidden sm:flex flex-1 items-center justify-center px-4 lg:px-8">
-                <form action="/shop/search" method="GET" class="relative w-full max-w-lg">
+                <form action="/shop/search" method="GET" id="search-form" class="relative w-full max-w-lg">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 20 20">
@@ -46,9 +46,15 @@
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input type="text" name="q"
+                    <input type="text" name="q" id="search-input"
                         class="block w-full py-1.5 pl-10 pr-4 text-sm text-gray-900 border border-white/30 rounded-full bg-white/70 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all"
                         placeholder="Search...">
+                    <div id="search-dropdown"
+                        class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 hidden z-50 overflow-hidden">
+                        <ul id="search-result" class="divide-y divide-gray-50 max-h-96 overflow-y-auto">
+
+                        </ul>
+                    </div>
                 </form>
             </div>
             <div class="absolute inset-y-0 right-0 flex shrink-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0">
@@ -57,10 +63,10 @@
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">View baskets</span>
                     <img src="/icons/shopping-cart.png" alt="Basket" class="size-6" />
-                        <span id="cart-badge" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] 
-                        font-bold text-white shadow-sm ring-2 ring-green-500 animate-bounce"style="<%= (typeof ItemCartCount !== 'undefined' && ItemCartCount > 0) ? '' : 'display: none;' %>">
-                            <%= (typeof ItemCartCount !== 'undefined' && ItemCartCount > 0) ? ItemCartCount : '' %>
-                        </span>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] 
+                        font-bold text-white shadow-sm ring-2 ring-green-500 animate-bounce" style="<%= (typeof ItemCartCount !== 'undefined' && ItemCartCount > 0) ? '' : 'display: none;' %>">
+                        <%= (typeof ItemCartCount !=='undefined' && ItemCartCount> 0) ? ItemCartCount : '' %>
+                    </span>
                 </a>
                 <div class="relative ml-4" id="user-menu-container">
                     <% if (typeof session !=='undefined' && session.username) { %>
@@ -91,23 +97,20 @@
                                 <p class="text-sm font-bold text-green-700 truncate">
                                     <%= session.username %>
                                 </p>
-                                </div>
-                            <a href="/profile"
-                                class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors">⚙️
-                                โปรไฟล์ของฉัน</a>
+                            </div>
                             <a href="/shop/orders"
-                                class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors">📦
+                                class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors">
                                 ประวัติการสั่งซื้อ</a>
                             <a href="/login/logout"
-                                class="block px-4 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 transition-colors">🚪
+                                class="block px-4 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 transition-colors">
                                 ออกจากระบบ</a>
-                            </div>
+                        </div>
                         <% } else { %>
                             <a href="/login" class="flex items-center gap-2 bg-white text-green-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-yellow-400
       hover:text-green-900 hover:scale-105 transition-all duration-300">
                                 <img src="/icons/user.png" alt="Login" class="size-5" />
                                 <span>เข้าสู่ระบบ</span>
-                                </a>
+                            </a>
                             <% } %>
                 </div>
             </div>
@@ -141,15 +144,60 @@
 </nav>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('#user-menu-button').click(function(event){
+    $(document).ready(function () {
+        $('#user-menu-button').click(function (event) {
             event.stopPropagation();
             $('#user-dropdown').fadeToggle('fast');
         });
-        $(document).click(function(event){
-            if(!$(event.target).closest('#user-menu-button,#user-dropdown').length){
+        $(document).click(function (event) {
+            if (!$(event.target).closest('#user-menu-button,#user-dropdown').length) {
                 $('#user-dropdown').fadeOut('fast');
             }
         });
+        const $searchInput = $('#search-input');
+        const $searchDropdown = $('#search-dropdown');
+        const $searchResult = $('#search-result');
+
+        $searchInput.on('input', function () {
+            const query = $(this).val().trim();
+            if (query.length > 0) {
+                $.ajax({
+                    url: '/shop/api/search',
+                    method: 'GET',
+                    data: { q: query },
+                    success: function (response) {
+                        $searchResult.empty();
+                        const items = response.data;
+                        if(items && items.length > 0){
+                            items.forEach(item => {
+                                const itemHtml = `
+                                    <li>
+                                        <a href="/shop/item/${item.id}" class="block p-3 hover:bg-green-50 text-sm text-gray-800 transition-colors">
+                                            <span class="font-medium">${item.name}</span>
+                                        </a>
+                                    </li>
+                                `;
+                                $searchResult.append(itemHtml);
+                            });
+                            $searchDropdown.removeClass('hidden');
+                        }else {
+                            $searchResult.append('<li class="p-4 text-center text-sm text-gray-500">ไม่พบสินค้า</li>');
+                            $searchDropdown.removeClass('hidden');
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Search Api Error : ', err);
+                    }
+                });
+            }
+            //  else {
+            //     $searchDropdown.addClass('hidden');
+            // }
+        });
+        $(document).click(function(event){
+            if(!$(event.target).closest('#search-form').length){
+                $searchDropdown.addClass('hidden');
+            }
+        })
     });
 </script>
