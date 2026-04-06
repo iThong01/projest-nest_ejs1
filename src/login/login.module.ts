@@ -6,13 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Acc]),
-  JwtModule.register({
-    secret: 'my-super-secret-jwt-key',
-    signOptions: {expiresIn: '1h'}
-  }),
+  imports: [
+    TypeOrmModule.forFeature([Acc]),
+    JwtModule.register({
+      secret: 'my-super-secret-jwt-key',
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
   providers: [LoginService],
-  controllers: [LoginController]
+  controllers: [LoginController],
 })
 export class LoginModule {}

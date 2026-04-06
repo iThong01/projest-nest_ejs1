@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+
   app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.setBaseViewsDir(join(process.cwd(), 'views'));
@@ -23,12 +23,11 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  app.use((req, res, next)=>{
+  app.use((req, res, next) => {
     res.locals.session = req.session;
     next();
   });
 
   await app.listen(process.env.PORT ?? 3000);
-
 }
 bootstrap();
