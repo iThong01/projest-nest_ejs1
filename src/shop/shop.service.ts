@@ -38,7 +38,7 @@ export class ShopService {
   }
 
   async checkout(
-    cart: CartItem[] | undefined,
+    cart: {itemId:number; quantity: number}[] | undefined,
     userId: string | null = null,
   ): Promise<boolean> {
     if (!cart || cart.length === 0) return false;
@@ -47,8 +47,11 @@ export class ShopService {
     let totalItem = 0;
 
     for (const cartItem of cart) {
-      totalPrice += cartItem.item.price * cartItem.quantity;
-      totalItem += cartItem.quantity;
+      const item = await this.itemRepo.findOne({ where: { id:cartItem.itemId } });
+      if(item){
+        totalPrice += item.price * cartItem.quantity;
+        totalItem += cartItem.quantity;
+      }
     }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -63,24 +66,23 @@ export class ShopService {
 
       const savedTransaction = await queryRunner.manager.save(newTransaction);
       for (const cartItem of cart) {
-        const orderItem = queryRunner.manager.create(OrderItem, {
-          order_id: savedTransaction.id.toString(),
-          product_id: cartItem.item.id.toString(),
-          quantity: cartItem.quantity,
-          total_price: cartItem.item.price * cartItem.quantity,
-          priceAtPurchase: cartItem.item.price,
+        const item = await queryRunner.manager.findOne(Item,{
+          where: {id: cartItem.itemId},
+          lock: {mode: 'pessimistic_write'}
         });
-        await queryRunner.manager.save(orderItem);
-
-        const item = await queryRunner.manager.findOne(Item, {
-          where: { id: cartItem.item.id },
-          lock: { mode: 'pessimistic_write' },
-        });
-        if (!item || item.count < cartItem.quantity) {
+        if(!item || item.count< cartItem.quantity){
           throw new Error(
-            `Product ${cartItem.item.name || 'ID ' + cartItem.item.id} มีในสต็อกไม่พอ `,
+            `Product ${item?.name || 'ID '+ cartItem.itemId} มีในสต็อคไม่พอคับ`
           );
         }
+        const orderItem = queryRunner.manager.create(OrderItem, {
+          order_id: savedTransaction.id.toString(),
+          product_id: item.id.toString(),
+          quantity: cartItem.quantity,
+          total_price: item.price * cartItem.quantity,
+          priceAtPurchase: item.price,
+        });
+        await queryRunner.manager.save(orderItem);
         item.count -= cartItem.quantity;
         await queryRunner.manager.save(item);
       }

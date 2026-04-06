@@ -2,7 +2,7 @@ import { Controller, Get, Param, Render, Post, Res, Req, UseInterceptors, Upload
 import { ShopService } from './shop.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlainObjectToDatabaseEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToDatabaseEntityTransformer.js';
-import type { MySessionData } from './interfaces/cart.interface';
+import type { MySessionData, CartItem } from './interfaces/cart.interface';
 import type { Request, Response } from 'express';
 import 'multer';
 import { REDIRECT_METADATA } from '@nestjs/common/constants';
@@ -61,17 +61,26 @@ export class ShopController {
 
   @Get('Your-Basket')
   @Render('shop/basket')
-  getBasketPage(@Req() req: Request) {
+  async getBasketPage(@Req() req: Request) {
     const cart = req.cookies?.cart || [];
+    const fullCart: CartItem[] =[];
     const cartCount = cart ? cart.length : 0;
     let totalPrice = 0;
     let totalItem = 0;
     for (const cartItem of cart) {
-      totalPrice += cartItem.item.price * cartItem.quantity;
-      totalItem += cartItem.quantity;
+      const item = await this.shopService.findOne(cartItem.itemId);
+      if(item){
+        totalPrice += item.price * cartItem.quantity;
+        totalItem += cartItem.quantity;
+        
+        fullCart.push({
+          item:item,
+          quantity: cartItem.quantity
+        });
+      }
     }
     return {
-      cart: cart,
+      cart: fullCart,
       totalPrice: totalPrice,
       totalItem: totalItem,
       word: 'Basket kub',
@@ -174,7 +183,7 @@ export class ShopController {
   async addToCart(
     @Body() body: { itemId: string; quantity: string },
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response //what is passthrough
+    @Res({ passthrough: true }) res: Response 
   ) {
     let cart = req.cookies?.cart || [];
     const itemIdNum = parseInt(body.itemId, 10);
@@ -184,13 +193,13 @@ export class ShopController {
       return { success: false, message: 'ไม่พบสินค้า' };
     }
     const exitingItemIndex = cart.findIndex(
-      (cartItem) => cartItem.item.id === itemIdNum,
+      (cartItem) => cartItem.itemId === itemIdNum,
     );
     if (exitingItemIndex > -1) {
       cart[exitingItemIndex].quantity += qtyNum;
     } else {
       cart.push({
-        item: item,
+        itemId: itemIdNum,
         quantity: qtyNum,
       });
     }
@@ -211,12 +220,12 @@ export class ShopController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    let cart = req.cookies?.cat || [];
+    let cart = req.cookies?.cart || [];
     const itemIdNum = parseInt(body.itemId, 10);
     cart = cart.filter(
-      (cartItem: any) => cartItem.item.id !== itemIdNum,
+      (cartItem: any) => cartItem.itemId !== itemIdNum,
     );
-    res.cookie('car', cart,{
+    res.cookie('cart', cart,{
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000
     });
