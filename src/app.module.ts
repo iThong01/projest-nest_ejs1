@@ -17,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'greenmarket',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
+      charset: 'utf8mb4',
     }),
     ShopModule,
     LoginModule,
