@@ -16,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: process.env.DB_PASSWORD || 'T12345678',
       database: process.env.DB_NAME || 'greenmarket',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: false,
       charset: 'utf8mb4',
       ssl: process.env.DB_SSL === 'true' ? {rejectUnauthorized:false} : false ,
     }),
