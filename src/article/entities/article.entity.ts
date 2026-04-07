@@ -16,10 +16,4 @@ export class Article {
 
   @Column({ type: 'varchar' })
   date: string;
-
-  // @Column({type:'varchar'})
-  // nameWrite: string
-
-  // @Column({type:'varchar'})
-  // role : string
 }

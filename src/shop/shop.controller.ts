@@ -1,4 +1,18 @@
-import { Controller, Get, Param, Render, Post, Res, Req, UseInterceptors, UploadedFile, Body, Session,Query, Redirect,} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Render,
+  Post,
+  Res,
+  Req,
+  UseInterceptors,
+  UploadedFile,
+  Body,
+  Session,
+  Query,
+  Redirect,
+} from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlainObjectToDatabaseEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToDatabaseEntityTransformer.js';
@@ -64,19 +78,19 @@ export class ShopController {
   @Render('shop/basket')
   async getBasketPage(@Req() req: Request) {
     const cart = req.cookies?.cart || [];
-    const fullCart: CartItem[] =[];
+    const fullCart: CartItem[] = [];
     const cartCount = cart ? cart.length : 0;
     let totalPrice = 0;
     let totalItem = 0;
     for (const cartItem of cart) {
       const item = await this.shopService.findOne(cartItem.itemId);
-      if(item){
+      if (item) {
         totalPrice += item.price * cartItem.quantity;
         totalItem += cartItem.quantity;
-        
+
         fullCart.push({
-          item:item,
-          quantity: cartItem.quantity
+          item: item,
+          quantity: cartItem.quantity,
         });
       }
     }
@@ -92,14 +106,15 @@ export class ShopController {
   @Get('history')
   @Render('shop/history')
   async getHistory(
-    @Session() session: MySessionData, 
+    @Session() session: MySessionData,
     @Req() req: Request,
-    @Res({passthrough: true}) res: Response) {
-    let cart = req.cookies?.cart ||[];
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    let cart = req.cookies?.cart || [];
     const cartCount = cart ? cart.length : 0;
     if (!session.userId) {
       res.redirect('/login');
-      return ;
+      return;
     }
     try {
       const orders = await this.shopService.getUserOrders(
@@ -184,7 +199,7 @@ export class ShopController {
   async addToCart(
     @Body() body: { itemId: string; quantity: string },
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response 
+    @Res({ passthrough: true }) res: Response,
   ) {
     let cart = req.cookies?.cart || [];
     const itemIdNum = parseInt(body.itemId, 10);
@@ -204,9 +219,9 @@ export class ShopController {
         quantity: qtyNum,
       });
     }
-    res.cookie('cart', cart,{
+    res.cookie('cart', cart, {
       httpOnly: true,
-      maxAge: 30* 24* 60 * 60 * 1000
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     console.log('ตะกร้านี้ : ', cart);
     return {
@@ -223,21 +238,19 @@ export class ShopController {
   ) {
     let cart = req.cookies?.cart || [];
     const itemIdNum = parseInt(body.itemId, 10);
-    cart = cart.filter(
-      (cartItem: any) => cartItem.itemId !== itemIdNum,
-    );
-    res.cookie('cart', cart,{
+    cart = cart.filter((cartItem: any) => cartItem.itemId !== itemIdNum);
+    res.cookie('cart', cart, {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return res.redirect('/shop/Your-Basket');
   }
 
   @Post('checkout')
   async checkout(
-    @Session() session: MySessionData, 
+    @Session() session: MySessionData,
     @Req() req: Request,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     let cart = req.cookies?.cart || [];
     if (!cart || cart.length === 0) {
@@ -252,14 +265,14 @@ export class ShopController {
       const orderId = await this.shopService.checkout(cart, userId);
       if (orderId) {
         res.cookie('cart', [], {
-          httpOnly:true,
-          maxAge: 30 * 24 * 60 * 60 *1000
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
         });
         return res.json({
           success: true,
           message: 'กำลังไปหน้าชำระเงิน',
           orderId: orderId,
-          paymentUrl:`/shop/payment/${orderId}`
+          paymentUrl: `/shop/payment/${orderId}`,
         });
       } else {
         return res
@@ -276,38 +289,38 @@ export class ShopController {
 
   @Get('payment/:orderId')
   @Render('shop/payment')
-  async getPaymentPage(
-    @Param('orderId') orderId: string,
-    @Req() req: Request
-  ){
+  async getPaymentPage(@Param('orderId') orderId: string, @Req() req: Request) {
     const order = await this.shopService.getOrderById(Number(orderId));
-    if(!order){
-      return { redirect: '/shop'};
+    if (!order) {
+      return { redirect: '/shop' };
     }
     const cart = req.cookies?.cart || [];
-    return{
+    return {
       order: order,
       title: 'Payment Sim',
       activeMenu: 'shop',
-      ItemCartCount: cart.length
+      ItemCartCount: cart.length,
     };
   }
   @Post('confirm-payment')
   async confirmPayment(
-    @Body() body: {orderId: string},
-    @Res() res: Response
-  ){
+    @Body() body: { orderId: string },
+    @Res() res: Response,
+  ) {
     const orderId = Number(body.orderId);
-    const isUpdated = await this.shopService.updateOrderStatus(orderId, 'Complete');
-    if(isUpdated){
+    const isUpdated = await this.shopService.updateOrderStatus(
+      orderId,
+      'Complete',
+    );
+    if (isUpdated) {
       return res.json({
         success: true,
-        message: 'ชำระเงินสำเร็จ ขอบคุณทที่ใช้บริการจาก Green Market'
+        message: 'ชำระเงินสำเร็จ ขอบคุณทที่ใช้บริการจาก Green Market',
       });
-    }else{
+    } else {
       return res.status(400).json({
         success: false,
-        message: 'ชำระเงินไม่สำเร็จ'
+        message: 'ชำระเงินไม่สำเร็จ',
       });
     }
   }
