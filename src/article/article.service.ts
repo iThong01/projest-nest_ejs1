@@ -13,8 +13,11 @@ export class ArticleService {
   async findAll(): Promise<Article[]> {
     return await this.itemRepo.find();
   }
-  // async createItem(itemData: Partial<Item>): Promise<Item> {
-  //     const newItem = this.itemRepo.create(itemData);
-  //     return await this.itemRepo.save(newItem);
-  // }
+  async createArticle(articleData: Partial<Article>): Promise<Article> {
+      const newArticle = this.itemRepo.create(articleData);
+      return await this.itemRepo.save(articleData);
+  }
+  async deleteArticle(id:number): Promise<void>{
+    await this.itemRepo.delete(id);
+  }
 }

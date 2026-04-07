@@ -16,7 +16,7 @@ export class ShopService {
     @InjectRepository(OrderItem)
     private orderItemRepo: Repository<OrderItem>,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   async findAll(): Promise<Item[]> {
     return await this.itemRepo.find();
@@ -38,7 +38,7 @@ export class ShopService {
   }
 
   async checkout(
-    cart: {itemId:number; quantity: number}[] | undefined,
+    cart: { itemId: number; quantity: number }[] | undefined,
     userId: string | null = null,
   ): Promise<number | null> {
     if (!cart || cart.length === 0) return null;
@@ -47,8 +47,10 @@ export class ShopService {
     let totalItem = 0;
 
     for (const cartItem of cart) {
-      const item = await this.itemRepo.findOne({ where: { id:cartItem.itemId } });
-      if(item){
+      const item = await this.itemRepo.findOne({
+        where: { id: cartItem.itemId },
+      });
+      if (item) {
         totalPrice += item.price * cartItem.quantity;
         totalItem += cartItem.quantity;
       }
@@ -66,13 +68,13 @@ export class ShopService {
 
       const savedTransaction = await queryRunner.manager.save(newTransaction);
       for (const cartItem of cart) {
-        const item = await queryRunner.manager.findOne(Item,{
-          where: {id: cartItem.itemId},
-          lock: {mode: 'pessimistic_write'}
+        const item = await queryRunner.manager.findOne(Item, {
+          where: { id: cartItem.itemId },
+          lock: { mode: 'pessimistic_write' },
         });
-        if(!item || item.count< cartItem.quantity){
+        if (!item || item.count < cartItem.quantity) {
           throw new Error(
-            `Product ${item?.name || 'ID '+ cartItem.itemId} มีในสต็อคไม่พอคับ`
+            `Product ${item?.name || 'ID ' + cartItem.itemId} มีในสต็อคไม่พอคับ`,
           );
         }
         const orderItem = queryRunner.manager.create(OrderItem, {
@@ -89,7 +91,9 @@ export class ShopService {
       await queryRunner.commitTransaction();
       return savedTransaction.id;
     } catch (error) {
-      console.error(`Transaction Fail Rollingback : ${( error as Error).message} `);
+      console.error(
+        `Transaction Fail Rollingback : ${(error as Error).message} `,
+      );
       await queryRunner.rollbackTransaction();
       return null;
     } finally {
@@ -101,7 +105,7 @@ export class ShopService {
     if (!query) return [];
     return await this.itemRepo
       .createQueryBuilder('item')
-      .where('item.name LIKE :query', { query: `%${query}%` })
+      .where('LOWER(item.name) LIKE LOWER(:query)', { query: `%${query}%` })
       .getMany();
   }
 
@@ -111,12 +115,12 @@ export class ShopService {
       order: { id: 'DESC' },
     });
   }
-  async getOrderById(id:number): Promise<Transaction|null>{
-    return await this.transactionRepo.findOne({ where: {id}});
+  async getOrderById(id: number): Promise<Transaction | null> {
+    return await this.transactionRepo.findOne({ where: { id } });
   }
-  async updateOrderStatus(id:number, status: string): Promise<boolean> {
-    const order = await this.transactionRepo.findOne({where: {id}});
-    if(order){
+  async updateOrderStatus(id: number, status: string): Promise<boolean> {
+    const order = await this.transactionRepo.findOne({ where: { id } });
+    if (order) {
       order.status = status;
       await this.transactionRepo.save(order);
       return true;

@@ -12,7 +12,7 @@ export class AppController {
 
   @Get()
   @Render('index')
-  async getHello(@Req() req: Request ) {
+  async getHello(@Req() req: Request) {
     const items = await this.shopService.findAll();
     let cart = req.cookies?.cart || [];
     const cartCount = cart ? cart.length : 0;
